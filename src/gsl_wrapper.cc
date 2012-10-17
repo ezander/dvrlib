@@ -92,6 +92,17 @@ vector vector::operator+(const vector& src) const {
   return vec;
 }
 
+vector& vector::operator-=(const vector& src) {
+  gsl_vector_sub(v, src.v);
+  return *this;
+}
+
+vector vector::operator-(const vector& src) const {
+  vector vec(*this);
+  gsl_vector_sub(vec.v , src.v);
+  return vec;
+}
+
 vector& vector::operator*=(double d) {
   gsl_vector_scale(v, d);
   return *this;
@@ -231,6 +242,34 @@ matrix& matrix::operator=(const matrix& src) {
   if( &src == this)
     return *this;
   gsl_matrix_memcpy(m, src.m);
+  return *this;
+}
+
+matrix matrix::operator+(const matrix& src) const {
+  matrix c(*this);
+  assert(c.size1()==src.size1());
+  assert(c.size2()==src.size2());
+
+  gsl_matrix_add (c.m , src.m);
+  return c;
+}
+
+matrix matrix::operator+=(const matrix& src) const {
+  gsl_matrix_add (m , src.m);
+  return *this;
+}
+
+matrix matrix::operator-(const matrix& src) const {
+  matrix c(*this);
+  assert(c.size1()==src.size1());
+  assert(c.size2()==src.size2());
+
+  gsl_matrix_sub (c.m , src.m);
+  return c;
+}
+
+matrix matrix::operator-=(const matrix& src) const {
+  gsl_matrix_sub (m , src.m);
   return *this;
 }
 

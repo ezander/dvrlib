@@ -7,10 +7,7 @@
 #include <iostream>
 #include <cassert>
 
-/**
- * Thrown, when an error occurs inside GSL code. gsl_enable_exceptions
- * needs to be activated for this to work.
- */
+
 struct gsl_exception {
   const char* reason;
   const char* file;
@@ -18,7 +15,6 @@ struct gsl_exception {
   int gsl_errno;
 };
 
-/** Enable throwing exceptions out of gsl_code */
 void gsl_enable_exceptions();
 
 
@@ -43,6 +39,8 @@ public:
   vector& operator=(const vector& src);
   vector& operator+=(const vector& src);
   vector operator+(const vector& src) const;
+  vector& operator-=(const vector& src);
+  vector operator-(const vector& src) const;
   vector& operator*=(double d);
   vector operator*(double d) const;
   double norm1() const;
@@ -93,6 +91,12 @@ public:
   void set(int i, int j, double val);
   double get(int i, int j) const;
   matrix& operator=(const matrix& src);
+
+  matrix operator+(const matrix& src) const;
+  matrix operator+=(const matrix& src) const;
+  matrix operator-(const matrix& src) const;
+  matrix operator-=(const matrix& src) const;
+
   vector operator*(const vector& src) const;
   matrix operator*(const matrix& src) const;
  

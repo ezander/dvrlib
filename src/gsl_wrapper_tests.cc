@@ -33,6 +33,10 @@ void test_vector() {
   vector x(4, src);
   assert(x.get(0)==3);
   assert(x.get(3)==7);
+
+  x-=x;
+  assert(x.get(0)==0);
+  assert(x.get(1)==0);
 }
 
 
@@ -58,7 +62,6 @@ void test_vector_view() {
   vv.set(0,-10);
   assert(x.get(0)==7);
   assert(vv.get(0)==-10);
-
 
   vector v3(3);
   v3.set(0,3);
@@ -122,10 +125,33 @@ void test_matrix() {
   assert(y.get(0)==37);
   assert(y.get(1)==31);
 
-
-
   double src[][3] = {{3, 4, 10}, {7, 5, 11}};
   matrix A3(2, 3, src);
+  assert(A3.get(0,0)==3);
+  assert(A3.get(1,0)==7);
+  assert(A3.get(0,1)==4);
+  assert(A3.get(1,2)==11);
+
+  matrix A4(2, 3, src);
+  A4 = A3 + A3;
+  assert(A4.get(0,0)==6);
+  assert(A4.get(1,0)==14);
+  assert(A4.get(0,1)==8);
+  assert(A4.get(1,2)==22);
+
+  A4 += A3;
+  assert(A4.get(0,0)==9);
+  assert(A4.get(1,0)==21);
+  assert(A4.get(0,1)==12);
+  assert(A4.get(1,2)==33);
+
+  A4 -= A3;
+  assert(A4.get(0,0)==6);
+  assert(A4.get(1,0)==14);
+  assert(A4.get(0,1)==8);
+  assert(A4.get(1,2)==22);
+
+  A4 = A4 - A3;
   assert(A3.get(0,0)==3);
   assert(A3.get(1,0)==7);
   assert(A3.get(0,1)==4);
