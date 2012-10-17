@@ -1,0 +1,6 @@
+*.o
+*~
+*.bak
+doc/latex
+doc/html
+Makefile.dep
