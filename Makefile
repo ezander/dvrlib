@@ -1,14 +1,19 @@
 TARGETS:=main doc
 LDLIBS:=-lgsl -lblas -lstdc++
-SRCS:=$(wildcard *.cc)
+SRCS:=$(wildcard src/*.cc)
 OBJS:=$(patsubst %cc,%o,$(SRCS))
 CXXFLAGS=-g -Wall
 
-default: main
+.PHONY: default
+default: depend main
 
+.PHONY: all
 all: depend $(TARGETS)
 
-main: $(OBJS)
+.PHONY: main
+main: src/main
+
+src/main: $(OBJS)
 
 .PHONY: doc
 doc:
@@ -16,10 +21,10 @@ doc:
 
 .PHONY: clean
 clean:
-	@rm -rf $(TARGETS) *.o
+	@rm -rf $(TARGETS) $(OBJS)
 
 depend:
-	g++ -MM $(SRCS) > Makefile.dep
+	@g++ -MM $(SRCS) > Makefile.dep
 
 include Makefile.dep
-# DO NOT DELETE
+
