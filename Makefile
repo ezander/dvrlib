@@ -1,3 +1,4 @@
+#
 TARGETS:=main doc
 LDLIBS:=-lgsl -lblas -lstdc++
 SRCS:=$(wildcard src/*.cc)
