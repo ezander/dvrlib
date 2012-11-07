@@ -3,4 +3,10 @@
 
 void recon_test_suite();
 
+namespace dvrlib{
+    //void test_lin_recon();
+    void test_lin_recon_update();
+
+}
+
 #endif // __RECON_TESTS_H__

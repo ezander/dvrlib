@@ -12,8 +12,8 @@ int main (void)
   gsl_enable_exceptions();
 
   try{
-    gsl_wrapper_test_suite();
-    recon_test_suite();
+    //gsl_wrapper_test_suite();
+    //recon_test_suite();
     example_VDI2048();
   }
   catch(const gsl_exception& e){

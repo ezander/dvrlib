@@ -49,34 +49,39 @@ namespace mischer_teiler {
 
 void test_lin_recon() {
   {
-    matrix F(2, 5, mischer_teiler::F);
-    matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
-    vector x(5, mischer_teiler::x);
+      dvrlib::matrix F(2, 5, mischer_teiler::F);
+      dvrlib::matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
+      dvrlib::vector x(5, mischer_teiler::x);
 
-    vector r=F*x;
-    vector v(5), v_exp(5, mischer_teiler::v);
+      dvrlib::vector r=F*x;
+      dvrlib::vector v(5), v_exp(5, mischer_teiler::v);
   
-    lin_recon(r, S_x, F, v);
+      lin_recon(r, S_x, F, v);
+    assert_vector_almost_equal(v, v_exp);
+
+    dvrlib::matrix S_v(S_x);
+    dvrlib::lin_cov_update(S_x, F, S_v);
+    //PRINT(S_v);
+
+  }
+  {
+      dvrlib::matrix F(1, 2, simple_system::F);
+      dvrlib::matrix S_x(2, 2, true, simple_system::S_x_diag);
+      dvrlib::vector x(2, simple_system::x);
+
+      dvrlib::vector r=F*x;
+      dvrlib::vector v(2), v_exp(2, simple_system::v);
+  
+      dvrlib::lin_recon(r, S_x, F, v);
     assert_vector_almost_equal(v, v_exp);
   }
   {
-    matrix F(1, 2, simple_system::F);
-    matrix S_x(2, 2, true, simple_system::S_x_diag);
-    vector x(2, simple_system::x);
+    dvrlib::matrix F(3, 4, simple_system2::F);
+    dvrlib::matrix S_x(2, 2, true, simple_system2::S_x_diag);
+    dvrlib::vector x(4, simple_system2::x);
 
-    vector r=F*x;
-    vector v(2), v_exp(2, simple_system::v);
-  
-    lin_recon(r, S_x, F, v);
-    assert_vector_almost_equal(v, v_exp);
-  }
-  {
-    matrix F(3, 4, simple_system2::F);
-    matrix S_x(2, 2, true, simple_system2::S_x_diag);
-    vector x(4, simple_system2::x);
-
-    vector r=F*x;
-    vector v(4), v_exp(4, simple_system2::v);
+    dvrlib::vector r=F*x;
+    dvrlib::vector v(4), v_exp(4, simple_system2::v);
   
     lin_recon(r, S_x, F, v);
     assert_vector_almost_equal(v, v_exp);
@@ -84,16 +89,16 @@ void test_lin_recon() {
 
 }
 
-void test_lin_recon_update() {
-  matrix F(2, 5, mischer_teiler::F);
-  matrix S_x_inv(4, 4, true, mischer_teiler::S_x_inv_diag);
-  vector x(5, mischer_teiler::x);
+void dvrlib::test_lin_recon_update() {
+  dvrlib::matrix F(2, 5, mischer_teiler::F);
+  dvrlib::matrix S_x_inv(4, 4, true, mischer_teiler::S_x_inv_diag);
+  dvrlib::vector x(5, mischer_teiler::x);
 
-  vector v(5), dv(5), v_exp(5, mischer_teiler::v);
+  dvrlib::vector v(5), dv(5), v_exp(5, mischer_teiler::v);
   v.set(1, 3);
   v.set(2, 4);
   v.set(4, 7);
-  vector r=F*(x+v);
+  dvrlib::vector r=F*(x+v);
   
   lin_recon_update(r, S_x_inv, F, v, dv);
   assert_vector_almost_equal(v+dv, v_exp);
@@ -103,30 +108,30 @@ void test_lin_recon_update() {
 
 class EnbiproDummy {
 public:
-  virtual vector getValues() = 0;
-  virtual matrix getCovarianceMatrix() = 0;
-  virtual matrix getJacobian(const vector& x) = 0;
-  virtual vector getResidual(const vector& x) = 0;
+  virtual dvrlib::vector getValues() = 0;
+  virtual dvrlib::matrix getCovarianceMatrix() = 0;
+  virtual dvrlib::matrix getJacobian(const dvrlib::vector& x) = 0;
+  virtual dvrlib::vector getResidual(const dvrlib::vector& x) = 0;
 };
 
 class LinearEnbiproDummy : public EnbiproDummy {
 public:
-  vector getValues() {
-    vector x(5, mischer_teiler::x);
+  dvrlib::vector getValues() {
+    dvrlib::vector x(5, mischer_teiler::x);
     return x;
   }
 
-  matrix getCovarianceMatrix() {
-    matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
+  dvrlib::matrix getCovarianceMatrix() {
+    dvrlib::matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
     return S_x;
   }
 
-  matrix getJacobian(const vector& x) {
-    matrix F(2, 5, mischer_teiler::F);
+  dvrlib::matrix getJacobian(const dvrlib::vector& x) {
+    dvrlib::matrix F(2, 5, mischer_teiler::F);
     return F;
   }
 
-  vector getResidual(const vector& x) {
+  dvrlib::vector getResidual(const dvrlib::vector& x) {
     return getJacobian(x) * x;
   }
 };
@@ -134,27 +139,27 @@ public:
 
 class QuadraticEnbiproDummy : public EnbiproDummy {
 public:
-  vector getValues() {
-    vector x(5, mischer_teiler::x);
+  dvrlib::vector getValues() {
+    dvrlib::vector x(5, mischer_teiler::x);
     x.set(4, 201);
     return x;
   }
 
-  matrix getCovarianceMatrix() {
-    matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
+  dvrlib::matrix getCovarianceMatrix() {
+    dvrlib::matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
     return S_x;
   }
 
-  matrix getJacobian(const vector& x) {
+  dvrlib::matrix getJacobian(const dvrlib::vector& x) {
     double d1 = 2*(x.get(0)+x.get(1)-x.get(4));
     double d2 = 2*(x.get(2)+x.get(3)-x.get(4));
     double J[][5] = {{d1, d1, 0, 0, -d1}, {0, 0, d2, d2, -d2}};
-    matrix F(2, 5, J);
+    dvrlib::matrix F(2, 5, J);
     return F;
   }
 
-  vector getResidual(const vector& x) {
-    vector r(2);
+  dvrlib::vector getResidual(const dvrlib::vector& x) {
+    dvrlib::vector r(2);
     r.set(0, pow( x.get(0)+x.get(1)-x.get(4),2));
     r.set(1, pow(-x.get(2)-x.get(3)+x.get(4),2));
     return r;
@@ -162,26 +167,26 @@ public:
 };
 
 
-class EnbiJacobianFunc : public func<vector,matrix> {
+class EnbiJacobianFunc : public dvrlib::func<dvrlib::vector,dvrlib::matrix> {
   EnbiproDummy* enbi;
 public:
   EnbiJacobianFunc(EnbiproDummy* _enbi) :
     enbi(_enbi) {}
-  virtual matrix operator()(const vector& arg);
+  virtual dvrlib::matrix operator()(const dvrlib::vector& arg);
 };
-matrix EnbiJacobianFunc::operator()(const vector& arg) {
+dvrlib::matrix EnbiJacobianFunc::operator()(const dvrlib::vector& arg) {
   return enbi->getJacobian(arg);
 }
 
 
-class EnbiResidualFunc : public func<vector,vector> {
+class EnbiResidualFunc : public dvrlib::func<dvrlib::vector,dvrlib::vector> {
   EnbiproDummy* enbi;
 public:
   EnbiResidualFunc(EnbiproDummy* _enbi) :
     enbi(_enbi) {}
-  virtual vector operator()(const vector& arg);
+  virtual dvrlib::vector operator()(const dvrlib::vector& arg);
 };
-vector EnbiResidualFunc::operator()(const vector& arg) {
+dvrlib::vector EnbiResidualFunc::operator()(const dvrlib::vector& arg) {
   return enbi->getResidual(arg);
 }
 
@@ -189,13 +194,13 @@ vector EnbiResidualFunc::operator()(const vector& arg) {
 void test_recon() {
   //LinearEnbiproDummy enbi_dummy;
   QuadraticEnbiproDummy enbi_dummy;
-  vector x = enbi_dummy.getValues();
-  matrix S_x = enbi_dummy.getCovarianceMatrix();
+  dvrlib::vector x = enbi_dummy.getValues();
+  dvrlib::matrix S_x = enbi_dummy.getCovarianceMatrix();
   EnbiResidualFunc f(&enbi_dummy);
   EnbiJacobianFunc J(&enbi_dummy);
-  vector v(x.size()), v_exp(5, mischer_teiler::v);;
+  dvrlib::vector v(x.size()), v_exp(5, mischer_teiler::v);;
   v_exp.set(4, -2.5); // note that x(4) is different here, thus v(4) also
-  matrix S_v(v.size(), v.size());
+  dvrlib::matrix S_v(v.size(), v.size());
 
   recon(x, S_x, f, J, v, S_v);
   assert(f(x+v).norm2()<1e-6);
@@ -203,7 +208,7 @@ void test_recon() {
 }
 
 void recon_test_suite() {
-  test_lin_recon_update();
+    dvrlib::test_lin_recon_update();
   test_lin_recon();
   test_recon();
 }

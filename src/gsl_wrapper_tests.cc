@@ -5,7 +5,7 @@
 #include "gsl_wrapper.h"
 
 void test_vector() {
-  vector v(3, 4.0);
+    dvrlib::vector v(3, 4.0);
   assert(v.get(0)==4.0);
   assert(v.get(1)==4.0);
   assert(v.get(2)==4.0);
@@ -17,7 +17,7 @@ void test_vector() {
   assert(v.get(1)==2.23);
   assert(v.get(2)==3.23);
 
-  vector w(3, 5.0);
+  dvrlib::vector w(3, 5.0);
   assert(w.get(0)==5);
 
   w+=v;
@@ -30,7 +30,7 @@ void test_vector() {
   assert(w.get(0)==6.23);
 
   double src[] = {3, 4, 10, 7};
-  vector x(4, src);
+  dvrlib::vector x(4, src);
   assert(x.get(0)==3);
   assert(x.get(3)==7);
 
@@ -41,14 +41,14 @@ void test_vector() {
 
 
 void test_vector_view() {
-  vector v(10, 4.0);
-  vector_view vv = v.subvector(3, 2);
+    dvrlib::vector v(10, 4.0);
+    dvrlib::vector_view vv = v.subvector(3, 2);
   vv.set(0,2);
   vv.set(1,5);
   assert(v.get(0)==4);
   assert(v.get(3)==2);
   assert(v.get(4)==5);
-  vector x(vv);
+  dvrlib::vector x(vv);
   x.set(0, 7);
   assert(x.get(0)==7);
   assert(x.get(1)==5);
@@ -63,7 +63,7 @@ void test_vector_view() {
   assert(x.get(0)==7);
   assert(vv.get(0)==-10);
 
-  vector v3(3);
+  dvrlib::vector v3(3);
   v3.set(0,3);
   v3.set(1,-4);
   v3.set(2,12);
@@ -73,7 +73,7 @@ void test_vector_view() {
 
 
 void test_matrix() {
-  matrix m(5, 6, true);
+    dvrlib::matrix m(5, 6, true);
   assert(m.get(0,0)==1);
   assert(m.get(0,1)==0);
   assert(m.get(4,4)==1);
@@ -81,28 +81,28 @@ void test_matrix() {
 
   m.set(3,4,7);
   m.set(1,3,9);
-  matrix m2 = m.transpose();
+  dvrlib::matrix m2 = m.transpose();
   assert(m.get(3,4)==7);
   assert(m.get(1,3)==9);
   assert(m2.get(4,3)==7);
   assert(m2.get(3,1)==9);
 
-  matrix A(2,2);
+  dvrlib::matrix A(2,2);
   A.set(0,0,4);
   A.set(0,1,6);
   A.set(1,0,10);
   A.set(1,1,3);
-  vector b(2);
+  dvrlib::vector b(2);
   b.set(0,38);
   b.set(1,59);
-  vector c=A.linsolve(b);
+  dvrlib::vector c=A.linsolve(b);
   assert(c.get(0)==5);
   assert(c.get(1)==3);
   assert(b.get(1)==59);
   assert(A.get(0,0)==4);
   assert(A.get(1,1)==3);
 
-  matrix B(A.inverse());
+  dvrlib::matrix B(A.inverse());
   double det=-48;
   assert(fabs(B.get(0,0)- +3.0/det)<1e-9);
   assert(fabs(B.get(0,1)- -6.0/det)<1e-9);
@@ -110,29 +110,29 @@ void test_matrix() {
   assert(fabs(B.get(1,1)- +4.0/det)<1e-9);
 
 
-  matrix A2(2,3);
+  dvrlib::matrix A2(2,3);
   A2.set(0,0,4);
   A2.set(0,1,6);
   A2.set(0,2,7);
   A2.set(1,0,10);
   A2.set(1,1,3);
   A2.set(1,2,5);
-  vector x(3);
+  dvrlib::vector x(3);
   x.set(0, 1);
   x.set(1, 2);
   x.set(2, 3);
-  vector y=A2*x;
+  dvrlib::vector y=A2*x;
   assert(y.get(0)==37);
   assert(y.get(1)==31);
 
   double src[][3] = {{3, 4, 10}, {7, 5, 11}};
-  matrix A3(2, 3, src);
+  dvrlib::matrix A3(2, 3, src);
   assert(A3.get(0,0)==3);
   assert(A3.get(1,0)==7);
   assert(A3.get(0,1)==4);
   assert(A3.get(1,2)==11);
 
-  matrix A4(2, 3, src);
+  dvrlib::matrix A4(2, 3, src);
   A4 = A3 + A3;
   assert(A4.get(0,0)==6);
   assert(A4.get(1,0)==14);
@@ -159,8 +159,8 @@ void test_matrix() {
 }
 
 void test_matrix_view(){
-  matrix m(10, 10, true);
-  matrix_view mv = m.submatrix(3,3,2,2);
+    dvrlib::matrix m(10, 10, true);
+    dvrlib::matrix_view mv = m.submatrix(3,3,2,2);
   assert(mv.get(0,0)==1);
   assert(mv.get(0,1)==0);
 
@@ -171,7 +171,7 @@ void test_matrix_view(){
   assert(m.get(3,4)==2);
   assert(m.get(4,3)==5);
 
-  matrix m3(2, 2, true);
+  dvrlib::matrix m3(2, 2, true);
   m3.set(0,0,5);
   m3.set(1,0,6);
   m3.set(0,1,7);

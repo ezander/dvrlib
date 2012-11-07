@@ -17,6 +17,7 @@ struct gsl_exception {
 
 void gsl_enable_exceptions();
 
+namespace dvrlib{
 
 class vector_view;
 
@@ -25,6 +26,7 @@ class vector {
   vector();
 public:
   vector(int n);
+  template<int n> vector();
   vector(int n, double x);
   vector(int n, const double* x);
   vector(const vector& src);
@@ -133,8 +135,11 @@ public:
   friend class matrix;
 };
 
+
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
+}
+
 
 #endif // __GSL_WRAPPER_H__
