@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cassert>
 
+namespace dvrlib{
 
 struct gsl_exception {
   const char* reason;
@@ -15,9 +16,9 @@ struct gsl_exception {
   int gsl_errno;
 };
 
+
 void gsl_enable_exceptions();
 
-namespace dvrlib{
 
 class vector_view;
 
@@ -139,6 +140,7 @@ public:
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
+
 }
 
 

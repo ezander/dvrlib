@@ -8,25 +8,27 @@
 //#include <vector>
 using std::string;
 
-double dvrlib::confint2var(double confint) {
+namespace dvrlib{
+
+double confint2var(double confint) {
   return pow((confint/1.96),2);
 }
-double dvrlib::var2confint(double var) {
+double var2confint(double var) {
   return 1.96*sqrt(var);
 }
 
-void dvrlib::recon_system::add_var(const char* name, double val, double confint) {
+void recon_system::add_var(const char* name, double val, double confint) {
   var v = {name, val, confint};
   vars.push_back(v);
 }
 
-void dvrlib::recon_system::add_covariance_coeff(const char* name1, const char* name2,
+void recon_system::add_covariance_coeff(const char* name1, const char* name2,
 					double cov_coeff) {
   extra_cov ec = {name1, name2, cov_coeff};
   extra_covs.push_back(ec);
 }
 
-int dvrlib::recon_system::find_var(const string& str) {
+int recon_system::find_var(const string& str) {
   int n = vars.size();
   for( int i=0; i<n; i++){
     if(vars[i].name==str)
@@ -35,7 +37,7 @@ int dvrlib::recon_system::find_var(const string& str) {
   return -1;
 }
   
-int dvrlib::recon_system::get_number_measured() {
+int recon_system::get_number_measured() {
   int count = 0, n = vars.size();
   for( int i=0; i<n; i++){
     if(vars[i].confint>=0)
@@ -44,7 +46,7 @@ int dvrlib::recon_system::get_number_measured() {
   return count;
 }
 
-dvrlib::matrix dvrlib::recon_system::get_covariance_matrix() {
+matrix recon_system::get_covariance_matrix() {
   int n = get_number_measured();
   matrix S_x(n, n);
   for(int i=0; i<n; i++){
@@ -64,7 +66,7 @@ dvrlib::matrix dvrlib::recon_system::get_covariance_matrix() {
   return S_x;
 }
 
-dvrlib::vector dvrlib::recon_system::get_values() {
+vector recon_system::get_values() {
   int n = vars.size();
   vector x(n);
   for( int i=0; i<n; i++){
@@ -74,7 +76,7 @@ dvrlib::vector dvrlib::recon_system::get_values() {
 }
   
 
-void dvrlib::recon_system::print_constraints(const matrix& F) {
+void recon_system::print_constraints(const matrix& F) {
   for(int i=0; i<F.size1(); i++){
     bool first=true;
     for(int j=0; j<F.size2(); j++) {
@@ -96,4 +98,5 @@ void dvrlib::recon_system::print_constraints(const matrix& F) {
     }
     std::cout << " = 0" << std::endl;
   }
+}
 }

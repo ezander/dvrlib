@@ -5,7 +5,9 @@
 #include "gsl_wrapper.h"
 #include "utils.h"
 
-void lin_cov_update_Streit(const dvrlib::matrix& S_x, const dvrlib::matrix& F, dvrlib::matrix& S_v) {
+namespace dvrlib {
+
+void lin_cov_update_Streit(const matrix& S_x, const matrix& F, matrix& S_v) {
   int M = S_x.size1();
   int N = F.size2() - M;
   int K = F.size1();
@@ -13,11 +15,12 @@ void lin_cov_update_Streit(const dvrlib::matrix& S_x, const dvrlib::matrix& F, d
   assert(S_x.size2() == M);
   assert(N>=0);
 
-  dvrlib::matrix Fs = F.submatrix(0, 0, K, M);
+  matrix Fs = F.submatrix(0, 0, K, M);
 
-  dvrlib::matrix S_x_F_T = S_x * Fs.transpose();
+  matrix S_x_F_T = S_x * Fs.transpose();
   S_v = S_x_F_T * (Fs * S_x_F_T).inverse() * S_x_F_T.transpose();
 }
+
 
 /** 
  * Compute the update of the covariance matrix. The update is computed by
@@ -34,7 +37,7 @@ void lin_cov_update_Streit(const dvrlib::matrix& S_x, const dvrlib::matrix& F, d
  * @param[in] F The matrix of constraints
  * @param[out] S_v The covariance of the updates
  */
-void lin_cov_update_Zander(const dvrlib::matrix& S_x, const dvrlib::matrix& F, dvrlib::matrix& S_v) {
+void lin_cov_update_Zander(const matrix& S_x, const matrix& F, matrix& S_v) {
   int M = S_x.size1();
   int N = F.size2() - M;
   int K = F.size1();
@@ -43,21 +46,21 @@ void lin_cov_update_Zander(const dvrlib::matrix& S_x, const dvrlib::matrix& F, d
   assert(S_x.size2() == M);
   assert(N>=0);
 
-  dvrlib::matrix P_m(M, L);
-  dvrlib::matrix I_m(M, M, true);
+  matrix P_m(M, L);
+  matrix I_m(M, M, true);
   P_m.submatrix(0, 0, M, M) = I_m;
 
-  dvrlib::matrix P_l(K, L);
-  dvrlib::matrix I_l(K, K, true);
+  matrix P_l(K, L);
+  matrix I_l(K, K, true);
   P_l.submatrix(0, M+N, K, K) = I_l;
 
-  dvrlib::matrix Z(L, L);
+  matrix Z(L, L);
   Z.submatrix(0, 0, M, M) = S_x.inverse();
   Z.submatrix(0, M+N, M+N, K) = F.transpose();
   Z.submatrix(M+N, 0, K, M+N) = F;
-  dvrlib::matrix Z_inv = Z.inverse();
+  matrix Z_inv = Z.inverse();
 
-  dvrlib::matrix F_m = F.submatrix(0, 0, K, M);
+  matrix F_m = F.submatrix(0, 0, K, M);
 
   PRINT_TITLE("Matrix P_m (compare 62)");
   PRINT(P_m);
@@ -71,8 +74,8 @@ void lin_cov_update_Zander(const dvrlib::matrix& S_x, const dvrlib::matrix& F, d
   PRINT_TITLE("Matrix S_x (compare 71)");
   PRINT(S_x);
 
-  dvrlib::matrix G = P_m * Z_inv * P_l.transpose();
-  dvrlib::matrix S_F = F_m * S_x * F_m.transpose();
+  matrix G = P_m * Z_inv * P_l.transpose();
+  matrix S_F = F_m * S_x * F_m.transpose();
 
   PRINT_TITLE("Matrix G (compare 77)");
   PRINT(G);
@@ -83,14 +86,13 @@ void lin_cov_update_Zander(const dvrlib::matrix& S_x, const dvrlib::matrix& F, d
 }
 
 
-
-void dvrlib::lin_cov_update(const dvrlib::matrix& S_x, const dvrlib::matrix& F, dvrlib::matrix& S_v) {
+void lin_cov_update(const matrix& S_x, const matrix& F, matrix& S_v) {
   //lin_cov_update_Streit(S_x, F, S_v);
   lin_cov_update_Zander(S_x, F, S_v);
 }
 
 
-void dvrlib::lin_recon(const vector& r,
+void lin_recon(const vector& r,
 	       const matrix& S_x,
 	       const matrix& F,
 	       vector& v) {
@@ -103,7 +105,7 @@ void dvrlib::lin_recon(const vector& r,
   assert(r.size() == K);
   assert(v.size() == M+N);
 
-  dvrlib::matrix Z(M+N+K, M+N+K);
+  matrix Z(M+N+K, M+N+K);
   Z.submatrix(0, 0, M, M) = S_x.inverse();
   Z.submatrix(0, M+N, M+N, K) = F.transpose();
   Z.submatrix(M+N, 0, K, M+N) = F;
@@ -111,28 +113,28 @@ void dvrlib::lin_recon(const vector& r,
   PRINT_TITLE("Matrix Z z 94)");
   PRINT(Z);
 
-  dvrlib::vector g(M+N+K);
+  vector g(M+N+K);
   g.subvector(M+N, K) = -1.0 * r;
 
   PRINT_TITLE("vector g z 97)");
   PRINT(g);
 
-  dvrlib::vector z = Z.linsolve(g);
+  vector z = Z.linsolve(g);
   v = z.subvector(0, M+N);
 
   PRINT_TITLE("vector v z 106)");
   PRINT(v);
 
-  dvrlib::matrix S_v(S_x);
+  matrix S_v(S_x);
   lin_cov_update(S_x, F, S_v);
 }
 
 
-void dvrlib::lin_recon_update(const dvrlib::vector& r,
-		      const dvrlib::matrix& S_x_inv,
-		      const dvrlib::matrix& F,
-		      const dvrlib::vector& v,
-		      dvrlib::vector& dv) {
+void lin_recon_update(const vector& r,
+		      const matrix& S_x_inv,
+		      const matrix& F,
+		      const vector& v,
+		      vector& dv) {
 
   int M = S_x_inv.size1();
   int N = v.size() - M;
@@ -143,30 +145,30 @@ void dvrlib::lin_recon_update(const dvrlib::vector& r,
   assert(F.size2() == M+N);
   assert(dv.size() == M+N);
 
-  dvrlib::matrix Z(M+N+K, M+N+K);
+  matrix Z(M+N+K, M+N+K);
   Z.submatrix(0, 0, M, M) = S_x_inv;
   Z.submatrix(0, M+N, M+N, K) = F.transpose();
   Z.submatrix(M+N, 0, K, M+N) = F;
 
-  dvrlib::vector g(M+N+K);
+  vector g(M+N+K);
   g.subvector(0, M) = -1.0 * (S_x_inv * v.subvector(0, M));
   g.subvector(M+N, K) = -1.0 * r;
   
-  dvrlib::vector z = Z.linsolve(g);
+  vector z = Z.linsolve(g);
   dv = z.subvector(0, M+N);
 }
 
 
-int dvrlib::recon(const dvrlib::vector& x,
-	   const dvrlib::matrix& S_x,
-	   dvrlib::func<dvrlib::vector, dvrlib::vector>& f,
-	   dvrlib::func<dvrlib::vector, dvrlib::matrix>& J,
-	   dvrlib::vector& v,
-	   dvrlib::matrix& S_v,
+int recon(const vector& x,
+	   const matrix& S_x,
+	   func<vector, vector>& f,
+	   func<vector, matrix>& J,
+	   vector& v,
+	   matrix& S_v,
 	   double eps,
 	   int maxiter) {
 
-    dvrlib::matrix S_x_inv = S_x.inverse();
+    matrix S_x_inv = S_x.inverse();
 
   for(int iter=0; iter<maxiter+1; iter++) {
     if( iter==maxiter) {
@@ -174,16 +176,16 @@ int dvrlib::recon(const dvrlib::vector& x,
       return 1;
     }
 
-    dvrlib::vector r=f(x + v);
+    vector r=f(x + v);
     // exit is residual is small enough
     if(r.norm2()<eps) {
       break;
     }
 
-    dvrlib::matrix F = J(x + v);
-    dvrlib::vector dv(0*v);
+    matrix F = J(x + v);
+    vector dv(0*v);
     
-    dvrlib::lin_recon_update(r, S_x_inv, F, v, dv);
+    lin_recon_update(r, S_x_inv, F, v, dv);
 
     v = v + dv;
     // update to v is smaller than eps (should be a different eps 
@@ -194,4 +196,6 @@ int dvrlib::recon(const dvrlib::vector& x,
   }
   
   return 0;
+}
+
 }
