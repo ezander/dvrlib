@@ -26,10 +26,13 @@ void lin_recon(const vector& r,
 
 
 void lin_recon_update(const vector& r, 
-	       const matrix& S_x_inv, 
-	       const matrix& F, 
-	       const vector& v, 
-	       vector& dv);
+	const matrix& S_x_inv,
+	const matrix& F,
+	const vector& v,
+	vector& dv);
+
+void extract_conifdence(const matrix& S_xnew,
+	vector& conf_results);
 
 int recon(const vector& x,
 	  const matrix& S_x, 

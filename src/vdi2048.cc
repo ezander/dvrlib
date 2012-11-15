@@ -79,7 +79,17 @@ void example_VDI2048_1(){
   PRINT_TITLE("Matrix S_xnew (compare A33)");
   PRINT(S_xnew);
 
+  dvrlib::vector vec_results(x.size());
+  vec_results = x + v;
 
+  PRINT_TITLE("Vector results (compare A34)");
+  PRINT(vec_results);
+
+  dvrlib::vector conf_results(S_x.size1());
+  extract_conifdence(S_xnew, conf_results);
+
+  PRINT_TITLE("conf_results (compare A34)");
+  PRINT(conf_results);
 }
 
 void example_VDI2048_2(){
@@ -158,13 +168,32 @@ void example_VDI2048_2(){
   PRINT_TITLE("Matrix S_v (compare A21)");
   PRINT(S_v);
   
+  // compute and print covariance update S_X_new
+  dvrlib::matrix S_xnew(S_x.size1(), S_x.size2());
+  S_xnew = S_x - S_v;
+
+  PRINT_TITLE("Matrix S_xnew (compare A33)");
+  PRINT(S_xnew);
+
+  dvrlib::vector vec_results(x.size());
+  vec_results = x + v;
+
+  PRINT_TITLE("Vector results (compare A34)");
+  PRINT(vec_results);
+
+  dvrlib::vector conf_results(S_x.size1());
+  extract_conifdence(S_xnew, conf_results);
+
+  PRINT_TITLE("conf_results (compare A34)");
+  PRINT(conf_results);
+
 }
 
-
-
 void example_VDI2048() {
-    //example_VDI2048_2();
-    example_VDI2048_1();
+    //example_VDI2048_1();
+    example_VDI2048_2();
+
+
 }  
 
 

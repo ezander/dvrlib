@@ -4,6 +4,7 @@
 #include "recon.h"
 #include "gsl_wrapper.h"
 #include "utils.h"
+#include "math.h"
 
 namespace dvrlib {
 
@@ -62,25 +63,11 @@ void lin_cov_update_Zander(const matrix& S_x, const matrix& F, matrix& S_v) {
 
   matrix F_m = F.submatrix(0, 0, K, M);
 
-  PRINT_TITLE("Matrix P_m (compare 62)");
-  PRINT(P_m);
   PRINT_TITLE("Matrix Z_inv (compare 64)");
   PRINT(Z_inv);
 
-  PRINT_TITLE("Matrix P_l (compare 67)");
-  PRINT(P_l);
-  PRINT_TITLE("Matrix F_m (compare 69)");
-  PRINT(F_m);
-  PRINT_TITLE("Matrix S_x (compare 71)");
-  PRINT(S_x);
-
   matrix G = P_m * Z_inv * P_l.transpose();
   matrix S_F = F_m * S_x * F_m.transpose();
-
-  PRINT_TITLE("Matrix G (compare 77)");
-  PRINT(G);
-  PRINT_TITLE("Matrix S_F (compare 79)");
-  PRINT(S_F);
 
   S_v = G * S_F * G.transpose();
 }
@@ -158,6 +145,25 @@ void lin_recon_update(const vector& r,
   dv = z.subvector(0, M+N);
 }
 
+void extract_conifdence(const matrix& S_xnew,
+	vector& conf_results){
+
+    int M = S_xnew.size1();
+    int K = conf_results.size();
+
+    assert(S_xnew.size2() == M);
+    assert(K == M);
+
+    double temp = 0.0;
+
+    for (int iter = 0; iter < K; iter++)
+	{
+	    temp = sqrt(S_xnew.get(iter,iter)) * 1.96;
+	    conf_results.set(iter, temp);
+	}
+
+
+}
 
 int recon(const vector& x,
 	   const matrix& S_x,

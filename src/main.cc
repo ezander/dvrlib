@@ -3,6 +3,7 @@
 #include "gsl_wrapper_tests.h"
 #include "recon_tests.h"
 #include "vdi2048.h"
+#include "utils.h"
 
 #include <iostream>
 
@@ -12,9 +13,10 @@ int main (void)
   dvrlib::gsl_enable_exceptions();
 
   try{
-    //gsl_wrapper_test_suite();
-    //recon_test_suite();
+	  //dvrlib::gsl_wrapper_test_suite();
+	  //dvrlib::recon_test_suite();
 	  dvrlib::example_VDI2048();
+
   }
   catch(const dvrlib::gsl_exception& e){
     std::cout << "Caught GSL exception" << std::endl;
