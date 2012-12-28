@@ -44,6 +44,8 @@ public:
   vector operator+(const vector& src) const;
   vector& operator-=(const vector& src);
   vector operator-(const vector& src) const;
+  vector operator-() const;
+
   vector& operator*=(double d);
   vector operator*(double d) const;
   double norm1() const;
@@ -84,6 +86,7 @@ public:
     matrix(int n1, int n2, const double (*x)[n]);
   
   matrix(const matrix& src);
+
   matrix(gsl_matrix* src);
   ~matrix();
 
@@ -100,10 +103,13 @@ public:
   matrix operator+=(const matrix& src) const;
   matrix operator-(const matrix& src) const;
   matrix operator-=(const matrix& src) const;
+  matrix operator-() const;
 
   vector operator*(const vector& src) const;
   matrix operator*(const matrix& src) const;
- 
+  matrix operator*(double d) const;
+  matrix operator*=(double d) const;
+
   matrix transpose() const;
   matrix inverse() const;
   vector linsolve(const vector& b) const;
@@ -122,6 +128,8 @@ matrix::matrix(int n1, int n2, const double (*x)[n]) {
   gsl_matrix_const_view  src = gsl_matrix_const_view_array(x[0], n1, n2);
   gsl_matrix_memcpy(m, &src.matrix);
 }
+
+matrix operator*(double d, const matrix& src);
 
 std::ostream& operator<<(std::ostream& out, const matrix& vec);
 

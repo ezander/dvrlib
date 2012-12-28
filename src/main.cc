@@ -7,14 +7,13 @@
 
 #include <iostream>
 
-
 int main (void)
 {
   dvrlib::gsl_enable_exceptions();
 
   try{
-	  //dvrlib::gsl_wrapper_test_suite();
-	  //dvrlib::recon_test_suite();
+	  dvrlib::gsl_wrapper_test_suite();
+	  dvrlib::recon_test_suite();
 	  dvrlib::example_VDI2048();
 
   }
