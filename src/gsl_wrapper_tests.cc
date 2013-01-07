@@ -4,6 +4,8 @@
 
 #include "gsl_wrapper.h"
 
+using namespace dvrlib;
+
 void test_vector() {
   vector v(3, 4.0);
   assert(v.get(0)==4.0);
@@ -158,6 +160,7 @@ void test_matrix() {
   assert(A3.get(1,2)==11);
 }
 
+
 void test_matrix_view(){
   matrix m(10, 10, true);
   matrix_view mv = m.submatrix(3,3,2,2);
@@ -182,6 +185,7 @@ void test_matrix_view(){
   assert(m.get(2,5)==7);
   assert(m.get(3,5)==8);
 }
+
 
 void gsl_wrapper_test_suite() {
   test_vector();

@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+using namespace dvrlib;
 
 int main (void)
 {

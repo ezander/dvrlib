@@ -5,8 +5,10 @@
 
 #include <cmath>
 #include <string>
-#include <vector>
+
 using std::string;
+
+namespace dvrlib{
 
 double confint2var(double confint) {
   return pow((confint/1.96),2);
@@ -20,7 +22,7 @@ void recon_system::add_var(const char* name, double val, double confint) {
   vars.push_back(v);
 }
 
-void recon_system::add_covariance_coeff(const char* name1, const char* name2, 
+void recon_system::add_covariance_coeff(const char* name1, const char* name2,
 					double cov_coeff) {
   extra_cov ec = {name1, name2, cov_coeff};
   extra_covs.push_back(ec);
@@ -96,4 +98,5 @@ void recon_system::print_constraints(const matrix& F) {
     }
     std::cout << " = 0" << std::endl;
   }
+}
 }

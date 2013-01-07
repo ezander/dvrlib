@@ -4,6 +4,9 @@
 #include <vector>
 #include <string>
 
+
+namespace dvrlib{
+
 /**
    Convert a 95% confidence interval into a variance.
 */
@@ -57,4 +60,5 @@ public:
   void print_constraints(const matrix& F);
 };
 
+}
 #endif // __RECON_SYSTEM_H__

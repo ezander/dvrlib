@@ -3,6 +3,8 @@
 #include "gsl_wrapper.h"
 #include "utils.h"
 
+namespace dvrlib {
+
 void lin_cov_update_Streit(const matrix& S_x, const matrix& F, matrix& S_v) {
   int M = S_x.size1();
   int N = F.size2() - M;
@@ -16,6 +18,7 @@ void lin_cov_update_Streit(const matrix& S_x, const matrix& F, matrix& S_v) {
   matrix S_x_F_T = S_x * Fs.transpose();
   S_v = S_x_F_T * (Fs * S_x_F_T).inverse() * S_x_F_T.transpose();
 }
+
 
 /** 
  * Compute the update of the covariance matrix. The update is computed by
@@ -57,12 +60,28 @@ void lin_cov_update_Zander(const matrix& S_x, const matrix& F, matrix& S_v) {
 
   matrix F_m = F.submatrix(0, 0, K, M);
 
+  PRINT_TITLE("Matrix P_m (compare 62)");
+  PRINT(P_m);
+  PRINT_TITLE("Matrix Z_inv (compare 64)");
+  PRINT(Z_inv);
+
+  PRINT_TITLE("Matrix P_l (compare 67)");
+  PRINT(P_l);
+  PRINT_TITLE("Matrix F_m (compare 69)");
+  PRINT(F_m);
+  PRINT_TITLE("Matrix S_x (compare 71)");
+  PRINT(S_x);
+
   matrix G = P_m * Z_inv * P_l.transpose();
   matrix S_F = F_m * S_x * F_m.transpose();
 
+  PRINT_TITLE("Matrix G (compare 77)");
+  PRINT(G);
+  PRINT_TITLE("Matrix S_F (compare 79)");
+  PRINT(S_F);
+
   S_v = G * S_F * G.transpose();
 }
-
 
 
 void lin_cov_update(const matrix& S_x, const matrix& F, matrix& S_v) {
@@ -89,11 +108,20 @@ void lin_recon(const vector& r,
   Z.submatrix(0, M+N, M+N, K) = F.transpose();
   Z.submatrix(M+N, 0, K, M+N) = F;
 
+  PRINT_TITLE("Matrix Z z 94)");
+  PRINT(Z);
+
   vector g(M+N+K);
   g.subvector(M+N, K) = -1.0 * r;
 
+  PRINT_TITLE("vector g z 97)");
+  PRINT(g);
+
   vector z = Z.linsolve(g);
   v = z.subvector(0, M+N);
+
+  PRINT_TITLE("vector v z 106)");
+  PRINT(v);
 
   matrix S_v(S_x);
   lin_cov_update(S_x, F, S_v);
@@ -130,10 +158,10 @@ void lin_recon_update(const vector& r,
 
 
 int recon(const vector& x,
-	   const matrix& S_x, 
+	   const matrix& S_x,
 	   func<vector, vector>& f,
 	   func<vector, matrix>& J,
-	   vector& v, 
+	   vector& v,
 	   matrix& S_v,
 	   double eps,
 	   int maxiter) {
@@ -166,4 +194,6 @@ int recon(const vector& x,
   }
   
   return 0;
+}
+
 }

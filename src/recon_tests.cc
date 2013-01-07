@@ -6,14 +6,16 @@
 #include "gsl_wrapper.h"
 #include "utils.h"
 
+using namespace dvrlib;
+
 #define assert_equal(a, b)\
-  assert((a)==(b))
+	assert((a)==(b))
 #define assert_almost_equal(a, b)\
-  assert(fabs((a)-(b))<1e-7*(fabs(a)+fabs(b)))
+	assert(fabs((a)-(b))<1e-7*(fabs(a)+fabs(b)))
 #define assert_vector_almost_equal_upto(a, b,eps)			\
-  assert(((a)+(-1*(b))).norm2()<(eps)*((a).norm2()+(b).norm2()))
+	assert(((a)+(-1*(b))).norm2()<(eps)*((a).norm2()+(b).norm2()))
 #define assert_vector_almost_equal(a, b)\
-  assert(((a)+(-1*(b))).norm2()<1e-7*((a).norm2()+(b).norm2()))
+	assert(((a)+(-1*(b))).norm2()<1e-7*((a).norm2()+(b).norm2()))
 
 namespace simple_system {
   // m1-m2=0
@@ -47,6 +49,7 @@ namespace mischer_teiler {
   double v[] = {0.75, 0.75, -0.75, -0.75, 198.5};
 }
 
+
 void test_lin_recon() {
   {
     matrix F(2, 5, mischer_teiler::F);
@@ -55,9 +58,12 @@ void test_lin_recon() {
 
     vector r=F*x;
     vector v(5), v_exp(5, mischer_teiler::v);
-  
+
     lin_recon(r, S_x, F, v);
     assert_vector_almost_equal(v, v_exp);
+
+    matrix S_v(S_x);
+    lin_cov_update(S_x, F, S_v);
   }
   {
     matrix F(1, 2, simple_system::F);
@@ -66,7 +72,7 @@ void test_lin_recon() {
 
     vector r=F*x;
     vector v(2), v_exp(2, simple_system::v);
-  
+
     lin_recon(r, S_x, F, v);
     assert_vector_almost_equal(v, v_exp);
   }
@@ -77,7 +83,7 @@ void test_lin_recon() {
 
     vector r=F*x;
     vector v(4), v_exp(4, simple_system2::v);
-  
+
     lin_recon(r, S_x, F, v);
     assert_vector_almost_equal(v, v_exp);
   }
@@ -94,7 +100,7 @@ void test_lin_recon_update() {
   v.set(2, 4);
   v.set(4, 7);
   vector r=F*(x+v);
-  
+
   lin_recon_update(r, S_x_inv, F, v, dv);
   assert_vector_almost_equal(v+dv, v_exp);
 }
@@ -185,7 +191,7 @@ vector EnbiResidualFunc::operator()(const vector& arg) {
   return enbi->getResidual(arg);
 }
 
- 
+
 void test_recon() {
   //LinearEnbiproDummy enbi_dummy;
   QuadraticEnbiproDummy enbi_dummy;

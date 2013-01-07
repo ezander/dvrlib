@@ -7,6 +7,8 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
+namespace dvrlib{
+
 void gsl_err_handler(const char * reason,
 		      const char * file,
 		      int line,
@@ -449,3 +451,5 @@ std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv) {
   PRINT_END();
   return out;
 }
+
+} // namespace dvrlib

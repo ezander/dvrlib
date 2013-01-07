@@ -7,6 +7,7 @@
 #include <iostream>
 #include <cassert>
 
+namespace dvrlib{
 
 struct gsl_exception {
   const char* reason;
@@ -133,8 +134,11 @@ public:
   friend class matrix;
 };
 
+
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
+
+} // namespace dvrlib
 
 #endif // __GSL_WRAPPER_H__
