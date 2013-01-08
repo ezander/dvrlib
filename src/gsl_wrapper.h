@@ -82,6 +82,7 @@ public:
     matrix(int n1, int n2, const double (*x)[n]);
   
   matrix(const matrix& src);
+  matrix(const gsl_matrix* src);
   ~matrix();
 
   gsl_matrix* gsl_internal();

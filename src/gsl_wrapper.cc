@@ -211,6 +211,11 @@ matrix::matrix(const matrix& src) {
   gsl_matrix_memcpy(m, src.m);
 }
 
+matrix::matrix(const gsl_matrix* src) {
+  m = gsl_matrix_alloc(src->size1, src->size2);
+  gsl_matrix_memcpy(m, src);
+}
+
 matrix::~matrix() {
   if(m->owner)
     gsl_matrix_free(m);
