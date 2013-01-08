@@ -8,16 +8,6 @@
 namespace dvrlib{
 
 /**
-   Convert a 95% confidence interval into a variance.
-*/
-double confint2var(double confint);
-
-/**
-   Convert a variance into a 95% confidence interval.
-*/
-double var2confint(double var);
-
-/**
    Encapsulates a system to be reconciliated, including variables,
    confidence intervals, covariance coefficient etc. Constraints still
    need to be implemented. Also fixed variables should be treated
@@ -60,5 +50,6 @@ public:
   void print_constraints(const matrix& F);
 };
 
-}
+} // namespace dvrlib
+
 #endif // __RECON_SYSTEM_H__

@@ -1,8 +1,5 @@
 #include <iostream>
-
-#include <string.h>
 #include <vector>
-#include <stdio.h>
 
 #include "gsl_wrapper.h"
 #include "recon.h"
@@ -77,6 +74,18 @@ void example_VDI2048_1(){
 
   PRINT_TITLE("Matrix S_xnew (compare A33)");
   PRINT(S_xnew);
+
+  vector vec_results(x.size());
+  vec_results = x + v;
+
+  PRINT_TITLE("Vector results (compare A34)");
+  PRINT(vec_results);
+
+  vector conf_results(S_x.size1());
+  extract_confidence(S_xnew, conf_results);
+
+  PRINT_TITLE("conf_results (compare A34)");
+  PRINT(conf_results);
 }
 
 void example_VDI2048_2(){
@@ -153,6 +162,24 @@ void example_VDI2048_2(){
   PRINT_TITLE("Matrix S_v (compare A21)");
   PRINT(S_v);
   
+  // compute and print covariance update S_X_new
+  matrix S_xnew(S_x.size1(), S_x.size2());
+  S_xnew = S_x - S_v;
+
+  PRINT_TITLE("Matrix S_xnew (compare A33)");
+  PRINT(S_xnew);
+
+  vector vec_results(x.size());
+  vec_results = x + v;
+
+  PRINT_TITLE("Vector results (compare A34)");
+  PRINT(vec_results);
+
+  vector conf_results(S_x.size1());
+  extract_confidence(S_xnew, conf_results);
+
+  PRINT_TITLE("conf_results (compare A34)");
+  PRINT(conf_results);
 }
 
 void example_VDI2048() {

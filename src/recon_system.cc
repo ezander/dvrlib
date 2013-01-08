@@ -10,13 +10,6 @@ using std::string;
 
 namespace dvrlib{
 
-double confint2var(double confint) {
-  return pow((confint/1.96),2);
-}
-double var2confint(double var) {
-  return 1.96*sqrt(var);
-}
-
 void recon_system::add_var(const char* name, double val, double confint) {
   var v = {name, val, confint};
   vars.push_back(v);
@@ -99,4 +92,5 @@ void recon_system::print_constraints(const matrix& F) {
     std::cout << " = 0" << std::endl;
   }
 }
-}
+
+} // namespace dvrlib

@@ -23,10 +23,10 @@ void lin_recon(const vector& r,
 	       vector& v);
 
 void lin_recon_update(const vector& r,
-	       const matrix& S_x_inv,
-	       const matrix& F,
-	       const vector& v,
-	       vector& dv);
+		      const matrix& S_x_inv,
+		      const matrix& F,
+		      const vector& v,
+		      vector& dv);
 
 int recon(const vector& x,
 	  const matrix& S_x,
@@ -37,5 +37,20 @@ int recon(const vector& x,
 	  double eps=1e-6,
 	  int maxiter=50);
 
-}
+
+void extract_confidence(const matrix& S_xnew,
+			vector& conf_results);
+
+/**
+   Convert a 95% confidence interval into a variance.
+*/
+double confint2var(double confint);
+
+/**
+   Convert a variance into a 95% confidence interval.
+*/
+double var2confint(double var);
+
+} // namespace dvrlib
+
 #endif // __RECON_H__
