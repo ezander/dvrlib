@@ -194,7 +194,10 @@ void test_matrix() {
     assert(A4.get(0,1)==-16);
     assert(A4.get(1,2)==-44);
 
-    //std::cout << A4[1] << std::endl;
+    vector d(A4[1]);
+    assert(d.get(0)==-28);
+    assert(d.get(1)==-20);
+    assert(d.get(2)==-44);
 }
 
 
