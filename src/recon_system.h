@@ -61,5 +61,6 @@ public:
   void print_constraints(const matrix& F);
 };
 
-}
+} // namespace dvrlib
+
 #endif // __RECON_SYSTEM_H__

@@ -13,11 +13,9 @@ void gsl_err_handler(const char * reason,
 		      const char * file,
 		      int line,
 		      int gsl_errno) {
-    gsl_exception ex = {reason, file, line, gsl_errno};
+  gsl_exception ex = {reason, file, line, gsl_errno};
   throw ex;
 }
-
-
 
 void gsl_enable_exceptions(){
   gsl_set_error_handler(gsl_err_handler);
@@ -79,7 +77,7 @@ double vector::get(int i) const {
 }
 
 double vector::operator[](int i){
-    return gsl_vector_get(v, i);
+  return gsl_vector_get(v, i);
 }
 
 vector& vector::operator=(const vector& src) {
@@ -88,7 +86,6 @@ vector& vector::operator=(const vector& src) {
   gsl_vector_memcpy(v, src.v);
   return *this;
 }
-
 
 vector& vector::operator+=(const vector& src) {
   gsl_vector_add(v, src.v);
@@ -225,11 +222,10 @@ matrix::matrix(const matrix& src) {
   gsl_matrix_memcpy(m, src.m);
 }
 
-matrix::matrix(gsl_matrix* src) {
-    m = gsl_matrix_alloc(src->size1, src->size2);
-    gsl_matrix_memcpy(m, src);
+matrix::matrix(const gsl_matrix* src) {
+  m = gsl_matrix_alloc(src->size1, src->size2);
+  gsl_matrix_memcpy(m, src);
 }
-
 
 matrix::~matrix() {
   if(m->owner)
@@ -257,13 +253,13 @@ void matrix::set(int i, int j, double val) {
 }
 
 double matrix::get(int i, int j) const {
-    return gsl_matrix_get(m, i, j);
+  return gsl_matrix_get(m, i, j);
 }
 
 vector_view matrix::operator[](int i){
-    matrix c(*this);
-    vector_view row  = gsl_matrix_row(c.m, i);
-    return row;
+  matrix c(*this);
+  vector_view row  = gsl_matrix_row(c.m, i);
+  return row;
 }
 
 matrix& matrix::operator=(const matrix& src) {
@@ -318,6 +314,7 @@ vector matrix::operator*(const vector& src) const {
 matrix matrix::operator*(const matrix& src) const {
   matrix c(size1(), src.size2());
   assert(size2()==src.size1());
+
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, m, src.m, 0.0, c.m);
   return c;
 }
@@ -444,7 +441,6 @@ gsl_matrix_view* matrix_view::gsl_internal() {
   return &mv;
 }
 
-
 matrix_view& matrix_view::operator=(const matrix& src) {
   if( &src == this)
     return *this;
@@ -505,4 +501,4 @@ std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv) {
   return out;
 }
 
-}
+} // namespace dvrlib

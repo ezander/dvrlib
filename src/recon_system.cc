@@ -5,7 +5,7 @@
 
 #include <cmath>
 #include <string>
-//#include <vector>
+
 using std::string;
 
 namespace dvrlib{
@@ -36,7 +36,7 @@ int recon_system::find_var(const string& str) {
   }
   return -1;
 }
-
+  
 void recon_system::change_var(const char* name, double val, double confint){
     int i = find_var(name);
     vars[i].value =  val;
@@ -106,4 +106,5 @@ void recon_system::print_constraints(const matrix& F) {
     std::cout << " = 0" << std::endl;
   }
 }
-}
+
+} // namespace dvrlib

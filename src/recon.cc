@@ -1,10 +1,9 @@
-//test hau
-
 #include <cassert>
+#include <cmath>
+
 #include "recon.h"
 #include "gsl_wrapper.h"
 #include "utils.h"
-#include "math.h"
 
 namespace dvrlib {
 
@@ -136,26 +135,6 @@ void lin_recon_update(const vector& r,
   dv = z.subvector(0, M+N);
 }
 
-void extract_conifdence(const matrix& S_xnew,
-	vector& conf_results){
-
-    int M = S_xnew.size1();
-    int K = conf_results.size();
-
-    assert(S_xnew.size2() == M);
-    assert(K == M);
-
-    double temp = 0.0;
-
-    for (int iter = 0; iter < K; iter++)
-	{
-	    temp = sqrt(S_xnew.get(iter,iter)) * 1.96;
-	    conf_results.set(iter, temp);
-	}
-
-
-}
-
 int recon(const vector& x,
 	   const matrix& S_x,
 	   func<vector, vector>& f,
@@ -165,7 +144,7 @@ int recon(const vector& x,
 	   double eps,
 	   int maxiter) {
 
-    matrix S_x_inv = S_x.inverse();
+  matrix S_x_inv = S_x.inverse();
 
   for(int iter=0; iter<maxiter+1; iter++) {
     if( iter==maxiter) {
@@ -195,4 +174,26 @@ int recon(const vector& x,
   return 0;
 }
 
+double confint2var(double confint) {
+  return pow((confint/1.96),2);
 }
+
+double var2confint(double var) {
+  return 1.96*sqrt(var);
+}
+
+void extract_confidence(const matrix& S_xnew,
+			vector& conf_results){
+
+  int M = S_xnew.size1();
+  int K = conf_results.size();
+
+  assert(S_xnew.size2() == M);
+  assert(K == M);
+
+  for(int i = 0; i < K; i++){
+    conf_results.set(i, var2confint(S_xnew.get(i, i)));
+  }
+}
+
+} // namespace dvrlib

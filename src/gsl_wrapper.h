@@ -16,7 +16,6 @@ struct gsl_exception {
   int gsl_errno;
 };
 
-
 void gsl_enable_exceptions();
 
 
@@ -50,7 +49,6 @@ public:
 
   vector& operator*=(double d);
   vector operator*(double d) const;
-
   double norm1() const;
   double norm2() const;
 
@@ -90,8 +88,7 @@ public:
     matrix(int n1, int n2, const double (*x)[n]);
   
   matrix(const matrix& src);
-
-  matrix(gsl_matrix* src);
+  matrix(const gsl_matrix* src);
   ~matrix();
 
   gsl_matrix* gsl_internal();
@@ -115,7 +112,7 @@ public:
   matrix operator*(const matrix& src) const;
   matrix operator*(double d) const;
   matrix operator*=(double d) const;
-
+ 
   matrix transpose() const;
   matrix inverse() const;
   vector linsolve(const vector& b) const;
@@ -156,7 +153,6 @@ std::ostream& operator<<(std::ostream& out, const gsl_vector& v);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
 
-}
-
+} // namespace dvrlib
 
 #endif // __GSL_WRAPPER_H__

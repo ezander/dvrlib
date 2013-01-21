@@ -1,9 +1,5 @@
-
 #include <iostream>
-
-#include <string.h>
 #include <vector>
-#include <stdio.h>
 
 #include "gsl_wrapper.h"
 #include "recon.h"
@@ -11,11 +7,11 @@
 #include "recon_system.h"
 #include "vdi2048.h"
 
-namespace dvrlib {
+using namespace dvrlib;
 
 
 void example_VDI2048_1(){
-  dvrlib::recon_system system;
+  recon_system system;
 
   system.add_var("m_FDKeI",  46.241, 2.500);
   system.add_var("m_FDKeII", 45.668, 2.500);
@@ -35,7 +31,7 @@ void example_VDI2048_1(){
   system.change_var("m_FDKeI",  46.241, 2.500);
 
   // get and print the covariance matrix
-  dvrlib::matrix S_x = system.get_covariance_matrix();
+  matrix S_x = system.get_covariance_matrix();
   PRINT_TITLE("Matrix S_X (compare A9, values from A6 and A8)");
   PRINT(S_x);
 
@@ -53,12 +49,12 @@ void example_VDI2048_1(){
     {0, 0,  1,  1,  -1, -1, -1, -1, -1,  0, 0},
     {0, 0,  0,  0,   0,  0,  1,  1,  1, -1, 0},
   };
-  dvrlib::matrix F(3, 11, Fc);
+  matrix F(3, 11, Fc);
 
-  dvrlib::vector x=system.get_values();
-  dvrlib::vector v(x.size());
+  vector x=system.get_values();
+  vector v(x.size());
 
-  dvrlib::lin_recon(F*x, S_x, F, v);
+  lin_recon(F*x, S_x, F, v);
 
   PRINT_TITLE("Vector v (compare A20)");
   PRINT(v);
@@ -68,39 +64,37 @@ void example_VDI2048_1(){
   PRINT(F*(x+v));
 
   // compute and print covariance S_v
-  dvrlib::matrix S_v(S_x.size1(), S_x.size2());
-  dvrlib::lin_cov_update(S_x, F, S_v);
+  matrix S_v(S_x.size1(), S_x.size2());
+  lin_cov_update(S_x, F, S_v);
 
   PRINT_TITLE("Matrix S_v (compare A21)");
   PRINT(S_v);
 
   // compute and print covariance update S_X_new
-  dvrlib::matrix S_xnew(S_x.size1(), S_x.size2());
+  matrix S_xnew(S_x.size1(), S_x.size2());
   S_xnew = S_x - S_v;
 
   PRINT_TITLE("Matrix S_xnew (compare A33)");
   PRINT(S_xnew);
 
-  dvrlib::vector vec_results(x.size());
+  vector vec_results(x.size());
   vec_results = x + v;
 
   PRINT_TITLE("Vector results (compare A34)");
   PRINT(vec_results);
 
-  dvrlib::vector conf_results(S_x.size1());
-  extract_conifdence(S_xnew, conf_results);
+  vector conf_results(S_x.size1());
+  extract_confidence(S_xnew, conf_results);
 
   PRINT_TITLE("conf_results (compare A34)");
   PRINT(conf_results);
 }
 
 void example_VDI2048_2(){
-    dvrlib::recon_system system;
+  recon_system system;
   
-  //system.add_var("m_FDKeI",  46.241, 0.800);
-  //system.add_var("m_FDKeII", 45.668, 0.790);
-  system.add_var("m_FDKeI",  46.241, 2.500);
-  system.add_var("m_FDKeII", 45.668, 2.500);
+  system.add_var("m_FDKeI",  46.241, 0.800);
+  system.add_var("m_FDKeII", 45.668, 0.790);
   system.add_var("m_SpI",    44.575, 0.535);
   system.add_var("m_SpII",   44.319, 0.532);
   system.add_var("m_V",       0.525, 0.105);
@@ -121,7 +115,7 @@ void example_VDI2048_2(){
 
 
   // get and print the covariance matrix
-  dvrlib::matrix S_x = system.get_covariance_matrix();
+  matrix S_x = system.get_covariance_matrix();
   PRINT_TITLE("Matrix S_X (compare A9, values from A6 and A8)");
   PRINT(S_x);
 
@@ -143,7 +137,7 @@ void example_VDI2048_2(){
     {0, 0, 0, 0,    0, 0, 0, 0, 0,  0, 0,  0,  1, -1,  0},
     {0, 0, 0, 0,    0, 0, 0, 0, 0, -1, 0,  0,  0,  0,  1},
   };
-  dvrlib::matrix F(7, 15, Fc);
+  matrix F(7, 15, Fc);
   PRINT_TITLE("Constraints (compare A1-A4 and A12)");
   system.print_constraints(F);
 
@@ -151,10 +145,10 @@ void example_VDI2048_2(){
   PRINT(F);
   
   // compute and print reconciliation vector v
-  dvrlib::vector x=system.get_values();
-  dvrlib::vector v(x.size());
+  vector x=system.get_values();
+  vector v(x.size());
 
-  dvrlib::lin_recon(F*x, S_x, F, v);
+  lin_recon(F*x, S_x, F, v);
 
   PRINT_TITLE("Vector v (compare A20)");
   PRINT(v);
@@ -164,41 +158,33 @@ void example_VDI2048_2(){
   PRINT(F*(x+v));
 
   // compute and print covariance S_v
-  dvrlib::matrix S_v(S_x.size1(), S_x.size2());
-  dvrlib::lin_cov_update(S_x, F, S_v);
+  matrix S_v(S_x.size1(), S_x.size2());
+  lin_cov_update(S_x, F, S_v);
 
   PRINT_TITLE("Matrix S_v (compare A21)");
   PRINT(S_v);
   
   // compute and print covariance update S_X_new
-  dvrlib::matrix S_xnew(S_x.size1(), S_x.size2());
+  matrix S_xnew(S_x.size1(), S_x.size2());
   S_xnew = S_x - S_v;
 
   PRINT_TITLE("Matrix S_xnew (compare A33)");
   PRINT(S_xnew);
 
-  dvrlib::vector vec_results(x.size());
+  vector vec_results(x.size());
   vec_results = x + v;
 
   PRINT_TITLE("Vector results (compare A34)");
   PRINT(vec_results);
 
-  dvrlib::vector conf_results(S_x.size1());
-  extract_conifdence(S_xnew, conf_results);
+  vector conf_results(S_x.size1());
+  extract_confidence(S_xnew, conf_results);
 
   PRINT_TITLE("conf_results (compare A34)");
   PRINT(conf_results);
-
 }
 
 void example_VDI2048() {
-    example_VDI2048_1();
-    example_VDI2048_2();
+  example_VDI2048_1();
+  //example_VDI2048_2();
 }  
-
-
-}
-
-
-
-
