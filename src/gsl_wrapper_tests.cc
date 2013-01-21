@@ -48,6 +48,8 @@ void test_vector() {
     assert(x.get(0)==-3);
     assert(x.get(3)==-7);
 
+    assert(x[0] ==-3);
+    assert(x[3] ==-7);
 
 }
 
@@ -192,7 +194,7 @@ void test_matrix() {
     assert(A4.get(0,1)==-16);
     assert(A4.get(1,2)==-44);
 
-    //std::cout << A4 << std::endl;
+    //std::cout << A4[1] << std::endl;
 }
 
 

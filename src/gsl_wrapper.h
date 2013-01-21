@@ -39,6 +39,8 @@ public:
   int size() const;
   void set(int i, double val);
   double get(int i) const;
+  double operator[](int i);
+
   vector& operator=(const vector& src);
   vector& operator+=(const vector& src);
   vector operator+(const vector& src) const;
@@ -48,6 +50,7 @@ public:
 
   vector& operator*=(double d);
   vector operator*(double d) const;
+
   double norm1() const;
   double norm2() const;
 
@@ -70,6 +73,7 @@ public:
   vector_view& operator=(const vector& src);
 
   friend class vector;
+  friend class matrix;
 };
 
 
@@ -97,6 +101,8 @@ public:
   int size2() const;
   void set(int i, int j, double val);
   double get(int i, int j) const;
+  vector_view operator[](int i);
+
   matrix& operator=(const matrix& src);
 
   matrix operator+(const matrix& src) const;

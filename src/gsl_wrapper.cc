@@ -78,12 +78,17 @@ double vector::get(int i) const {
   return gsl_vector_get(v, i);
 }
 
+double vector::operator[](int i){
+    return gsl_vector_get(v, i);
+}
+
 vector& vector::operator=(const vector& src) {
   if( &src == this)
     return *this;
   gsl_vector_memcpy(v, src.v);
   return *this;
 }
+
 
 vector& vector::operator+=(const vector& src) {
   gsl_vector_add(v, src.v);
@@ -253,6 +258,12 @@ void matrix::set(int i, int j, double val) {
 
 double matrix::get(int i, int j) const {
     return gsl_matrix_get(m, i, j);
+}
+
+vector_view matrix::operator[](int i){
+    matrix c(*this);
+    vector_view row  = gsl_matrix_row(c.m, i);
+    return row;
 }
 
 matrix& matrix::operator=(const matrix& src) {
@@ -440,7 +451,6 @@ matrix_view& matrix_view::operator=(const matrix& src) {
   gsl_matrix_memcpy(m, src.m);
   return *this;
 }
-
 
 matrix operator*(double d, const matrix& src){
     gsl_matrix* dest = gsl_matrix_alloc(src.size1(), src.size2());
