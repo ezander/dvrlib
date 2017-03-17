@@ -30,6 +30,13 @@ int recon_system::find_var(const string& str) {
   return -1;
 }
   
+void recon_system::change_var(const char* name, double val, double confint){
+    int i = find_var(name);
+    vars[i].value =  val;
+    vars[i].confint =  confint;
+}
+
+  
 int recon_system::get_number_measured() {
   int count = 0, n = vars.size();
   for( int i=0; i<n; i++){

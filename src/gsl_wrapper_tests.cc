@@ -39,6 +39,18 @@ void test_vector() {
   x-=x;
   assert(x.get(0)==0);
   assert(x.get(1)==0);
+
+  vector z(4, src);
+  assert(z.get(0)==3);
+  assert(z.get(3)==7);
+
+  x = -z;
+  assert(x.get(0)==-3);
+  assert(x.get(3)==-7);
+
+  assert(x[0] ==-3);
+  assert(x[3] ==-7);
+
 }
 
 
@@ -158,6 +170,34 @@ void test_matrix() {
   assert(A3.get(1,0)==7);
   assert(A3.get(0,1)==4);
   assert(A3.get(1,2)==11);
+
+  A4 = -A3;
+  assert(A3.get(0,0)==3);
+  assert(A3.get(1,0)==7);
+  assert(A3.get(0,1)==4);
+  assert(A3.get(1,2)==11);
+
+  assert(A4.get(0,0)==-3);
+  assert(A4.get(1,0)==-7);
+  assert(A4.get(0,1)==-4);
+  assert(A4.get(1,2)==-11);
+
+  A4 *= -2.0;
+  assert(A4.get(0,0)==6);
+  assert(A4.get(1,0)==14);
+  assert(A4.get(0,1)==8);
+  assert(A4.get(1,2)==22);
+
+  A4 = A4 * -2.0;
+  assert(A4.get(0,0)==-12);
+  assert(A4.get(1,0)==-28);
+  assert(A4.get(0,1)==-16);
+  assert(A4.get(1,2)==-44);
+
+  vector d(A4[1]);
+  assert(d.get(0)==-28);
+  assert(d.get(1)==-20);
+  assert(d.get(2)==-44);
 }
 
 

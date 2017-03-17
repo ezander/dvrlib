@@ -44,6 +44,7 @@ public:
 			    double cov_coeff);
 
   int find_var(const std::string& str);
+  void change_var(const char* name, double val, double confint);
   int get_number_measured();
   matrix get_covariance_matrix();
   vector get_values();

@@ -28,6 +28,8 @@ void example_VDI2048_1(){
   system.add_covariance_coeff("m_FDKeI", "m_FDKeII", 0.2);
   system.add_covariance_coeff("m_SpI", "m_SpII", 0.4);
 
+  system.change_var("m_FDKeI",  46.241, 2.500);
+
   // get and print the covariance matrix
   matrix S_x = system.get_covariance_matrix();
   PRINT_TITLE("Matrix S_X (compare A9, values from A6 and A8)");

@@ -62,8 +62,6 @@ void lin_cov_update_Zander(const matrix& S_x, const matrix& F, matrix& S_v) {
 
   matrix F_m = F.submatrix(0, 0, K, M);
 
-  PRINT_TITLE("Matrix Z_inv (compare 64)");
-  PRINT(Z_inv);
 
   matrix G = P_m * Z_inv * P_l.transpose();
   matrix S_F = F_m * S_x * F_m.transpose();
@@ -96,20 +94,11 @@ void lin_recon(const vector& r,
   Z.submatrix(0, M+N, M+N, K) = F.transpose();
   Z.submatrix(M+N, 0, K, M+N) = F;
 
-  PRINT_TITLE("Matrix Z z 94)");
-  PRINT(Z);
-
   vector g(M+N+K);
   g.subvector(M+N, K) = -1.0 * r;
 
-  PRINT_TITLE("vector g z 97)");
-  PRINT(g);
-
   vector z = Z.linsolve(g);
   v = z.subvector(0, M+N);
-
-  PRINT_TITLE("vector v z 106)");
-  PRINT(v);
 
   matrix S_v(S_x);
   lin_cov_update(S_x, F, S_v);

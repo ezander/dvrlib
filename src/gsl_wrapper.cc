@@ -76,6 +76,10 @@ double vector::get(int i) const {
   return gsl_vector_get(v, i);
 }
 
+double vector::operator[](int i){
+  return gsl_vector_get(v, i);
+}
+
 vector& vector::operator=(const vector& src) {
   if( &src == this)
     return *this;
@@ -104,6 +108,13 @@ vector vector::operator-(const vector& src) const {
   gsl_vector_sub(vec.v , src.v);
   return vec;
 }
+
+vector vector::operator-() const {
+  vector vec(*this); // -z
+  vec = vec * (-1);
+  return vec;
+}
+
 
 vector& vector::operator*=(double d) {
   gsl_vector_scale(v, d);
@@ -245,6 +256,12 @@ double matrix::get(int i, int j) const {
   return gsl_matrix_get(m, i, j);
 }
 
+vector_view matrix::operator[](int i){
+  matrix c(*this);
+  vector_view row  = gsl_matrix_row(c.m, i);
+  return row;
+}
+
 matrix& matrix::operator=(const matrix& src) {
   if( &src == this)
     return *this;
@@ -280,6 +297,13 @@ matrix matrix::operator-=(const matrix& src) const {
   return *this;
 }
 
+matrix matrix::operator-() const {
+  matrix c(*this);
+  gsl_matrix_scale(c.m, -1.0);
+  return c.m;
+}
+
+
 vector matrix::operator*(const vector& src) const {
   vector y(size1());
   assert(size2()==src.size());
@@ -294,6 +318,20 @@ matrix matrix::operator*(const matrix& src) const {
   gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, m, src.m, 0.0, c.m);
   return c;
 }
+
+matrix matrix::operator*(double d) const {
+  matrix c(*this);
+  gsl_matrix_scale(c.m, d);
+  return c.m;
+}
+
+
+matrix matrix::operator*=(double d) const {
+  gsl_matrix_scale(m, d);
+  return m;
+}
+
+
 
 
 matrix matrix::transpose() const {
@@ -410,6 +448,12 @@ matrix_view& matrix_view::operator=(const matrix& src) {
   return *this;
 }
 
+matrix operator*(double d, const matrix& src){
+    gsl_matrix* dest = gsl_matrix_alloc(src.size1(), src.size2());
+    gsl_matrix_memcpy(dest, src.gsl_internal());
+    gsl_matrix_scale(dest, d);
+    return dest;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////

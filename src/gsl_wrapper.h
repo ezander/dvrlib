@@ -26,6 +26,7 @@ class vector {
   vector();
 public:
   vector(int n);
+  template<int n> vector();
   vector(int n, double x);
   vector(int n, const double* x);
   vector(const vector& src);
@@ -37,11 +38,15 @@ public:
   int size() const;
   void set(int i, double val);
   double get(int i) const;
+  double operator[](int i);
+
   vector& operator=(const vector& src);
   vector& operator+=(const vector& src);
   vector operator+(const vector& src) const;
   vector& operator-=(const vector& src);
   vector operator-(const vector& src) const;
+  vector operator-() const;
+
   vector& operator*=(double d);
   vector operator*(double d) const;
   double norm1() const;
@@ -66,6 +71,7 @@ public:
   vector_view& operator=(const vector& src);
 
   friend class vector;
+  friend class matrix;
 };
 
 
@@ -92,15 +98,20 @@ public:
   int size2() const;
   void set(int i, int j, double val);
   double get(int i, int j) const;
+  vector_view operator[](int i);
+
   matrix& operator=(const matrix& src);
 
   matrix operator+(const matrix& src) const;
   matrix operator+=(const matrix& src) const;
   matrix operator-(const matrix& src) const;
   matrix operator-=(const matrix& src) const;
+  matrix operator-() const;
 
   vector operator*(const vector& src) const;
   matrix operator*(const matrix& src) const;
+  matrix operator*(double d) const;
+  matrix operator*=(double d) const;
  
   matrix transpose() const;
   matrix inverse() const;
@@ -120,6 +131,8 @@ matrix::matrix(int n1, int n2, const double (*x)[n]) {
   gsl_matrix_const_view  src = gsl_matrix_const_view_array(x[0], n1, n2);
   gsl_matrix_memcpy(m, &src.matrix);
 }
+
+matrix operator*(double d, const matrix& src);
 
 std::ostream& operator<<(std::ostream& out, const matrix& vec);
 

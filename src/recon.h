@@ -28,6 +28,9 @@ void lin_recon_update(const vector& r,
 		      const vector& v,
 		      vector& dv);
 
+void extract_conifdence(const matrix& S_xnew,
+	vector& conf_results);
+
 int recon(const vector& x,
 	  const matrix& S_x,
 	  func<vector, vector>& f,
