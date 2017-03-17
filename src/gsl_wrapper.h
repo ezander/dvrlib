@@ -26,7 +26,6 @@ class vector {
   vector();
 public:
   vector(int n);
-  template<int n> vector();
   vector(int n, double x);
   vector(int n, const double* x);
   vector(const vector& src);
