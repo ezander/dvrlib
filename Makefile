@@ -1,13 +1,13 @@
 TARGETS:=main doc
-LDLIBS:=-lgsl -lstdc++ -Lgsl/.libs\
-	-Lgsl/cblas/.libs -lgslcblas
+LDLIBS:=-lgsl -lstdc++ -lgslcblas -lm \
+	-Lgsl/.libs -Lgsl/cblas/.libs 
 SRCS:=$(wildcard src/*.cc)
 OBJS:=$(patsubst %cc,%o,$(SRCS))
 CXXFLAGS=-g -Wall -Igsl -Igsl/cblas
 
 .PHONY: default
 default: depend main lib
-	
+
 .PHONY: all
 all: depend $(TARGETS)
 
@@ -24,7 +24,6 @@ doc:
 .PHONY: clean
 clean:
 	@rm -rf $(TARGETS) $(OBJS) libdvrlib.a
-	rm -rf libdvrlib.a
 
 depend:
 	@g++ -MM $(SRCS) > Makefile.dep
