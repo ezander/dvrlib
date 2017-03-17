@@ -4,3 +4,5 @@
 doc/latex
 doc/html
 Makefile.dep
+/libdvrlib.a
+/src/main
