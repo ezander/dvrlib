@@ -1,5 +1,5 @@
-#ifndef __RECON_SYSTEM_H__
-#define __RECON_SYSTEM_H__
+#ifndef DVRLIB_RECON_SYSTEM_H
+#define DVRLIB_RECON_SYSTEM_H
 
 #include <vector>
 #include <string>
@@ -53,4 +53,4 @@ public:
 
 } // namespace dvrlib
 
-#endif // __RECON_SYSTEM_H__
+#endif // DVRLIB_RECON_SYSTEM_H

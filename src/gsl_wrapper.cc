@@ -52,7 +52,7 @@ vector::vector(const vector& src) {
 }
 
 vector::~vector() {
-  if(v->owner)
+  if(v && v->owner)
     gsl_vector_free(v);
 }
 
@@ -228,7 +228,7 @@ matrix::matrix(const gsl_matrix* src) {
 }
 
 matrix::~matrix() {
-  if(m->owner)
+  if(m && m->owner)
     gsl_matrix_free(m);
 }
 
@@ -257,8 +257,7 @@ double matrix::get(int i, int j) const {
 }
 
 vector_view matrix::operator[](int i){
-  matrix c(*this);
-  vector_view row  = gsl_matrix_row(c.m, i);
+  vector_view row  = gsl_matrix_row(m, i);
   return row;
 }
 
@@ -278,7 +277,7 @@ matrix matrix::operator+(const matrix& src) const {
   return c;
 }
 
-matrix matrix::operator+=(const matrix& src) const {
+matrix& matrix::operator+=(const matrix& src) {
   gsl_matrix_add (m , src.m);
   return *this;
 }
@@ -292,7 +291,7 @@ matrix matrix::operator-(const matrix& src) const {
   return c;
 }
 
-matrix matrix::operator-=(const matrix& src) const {
+matrix& matrix::operator-=(const matrix& src) {
   gsl_matrix_sub (m , src.m);
   return *this;
 }
@@ -326,9 +325,9 @@ matrix matrix::operator*(double d) const {
 }
 
 
-matrix matrix::operator*=(double d) const {
+matrix& matrix::operator*=(double d) {
   gsl_matrix_scale(m, d);
-  return m;
+  return *this;
 }
 
 
@@ -449,10 +448,7 @@ matrix_view& matrix_view::operator=(const matrix& src) {
 }
 
 matrix operator*(double d, const matrix& src){
-    gsl_matrix* dest = gsl_matrix_alloc(src.size1(), src.size2());
-    gsl_matrix_memcpy(dest, src.gsl_internal());
-    gsl_matrix_scale(dest, d);
-    return dest;
+    return src * d;
 }
 
 

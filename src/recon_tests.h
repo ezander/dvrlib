@@ -1,8 +1,8 @@
-#ifndef __RECON_TESTS_H__
-#define __RECON_TESTS_H__
+#ifndef DVRLIB_RECON_TESTS_H
+#define DVRLIB_RECON_TESTS_H
 
 void recon_test_suite();
 void test_lin_recon();
 void test_lin_recon_update();
 
-#endif // __RECON_TESTS_H__
+#endif // DVRLIB_RECON_TESTS_H

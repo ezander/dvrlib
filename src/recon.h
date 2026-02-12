@@ -1,5 +1,5 @@
-#ifndef __RECON_H__
-#define __RECON_H__
+#ifndef DVRLIB_RECON_H
+#define DVRLIB_RECON_H
 
 namespace dvrlib{
 
@@ -28,9 +28,6 @@ void lin_recon_update(const vector& r,
 		      const vector& v,
 		      vector& dv);
 
-void extract_conifdence(const matrix& S_xnew,
-	vector& conf_results);
-
 int recon(const vector& x,
 	  const matrix& S_x,
 	  func<vector, vector>& f,
@@ -56,4 +53,4 @@ double var2confint(double var);
 
 } // namespace dvrlib
 
-#endif // __RECON_H__
+#endif // DVRLIB_RECON_H

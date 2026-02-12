@@ -1,5 +1,5 @@
-#ifndef __GSL_WRAPPER_H__
-#define __GSL_WRAPPER_H__
+#ifndef DVRLIB_GSL_WRAPPER_H
+#define DVRLIB_GSL_WRAPPER_H
 
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_matrix.h>
@@ -102,15 +102,15 @@ public:
   matrix& operator=(const matrix& src);
 
   matrix operator+(const matrix& src) const;
-  matrix operator+=(const matrix& src) const;
+  matrix& operator+=(const matrix& src);
   matrix operator-(const matrix& src) const;
-  matrix operator-=(const matrix& src) const;
+  matrix& operator-=(const matrix& src);
   matrix operator-() const;
 
   vector operator*(const vector& src) const;
   matrix operator*(const matrix& src) const;
   matrix operator*(double d) const;
-  matrix operator*=(double d) const;
+  matrix& operator*=(double d);
  
   matrix transpose() const;
   matrix inverse() const;
@@ -154,4 +154,4 @@ std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
 
 } // namespace dvrlib
 
-#endif // __GSL_WRAPPER_H__
+#endif // DVRLIB_GSL_WRAPPER_H
