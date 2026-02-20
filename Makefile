@@ -19,7 +19,7 @@ src/main: $(OBJS)
 
 .PHONY: doc
 doc:
-	doxygen doxygen.config
+	doxygen
 
 .PHONY: clean
 clean:
