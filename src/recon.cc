@@ -157,7 +157,7 @@ int recon(const vector& x,
     }
 
     matrix F = J(x + v);
-    vector dv(0*v);
+    vector dv(v.size());
     
     lin_recon_update(r, S_x_inv, F, v, dv);
 

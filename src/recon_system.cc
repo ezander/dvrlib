@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "recon_system.h"
 
+#include <cassert>
 #include <cmath>
 #include <string>
 
@@ -32,6 +33,7 @@ int recon_system::find_var(const string& str) {
   
 void recon_system::change_var(const char* name, double val, double confint){
     int i = find_var(name);
+    assert(i >= 0);
     vars[i].value =  val;
     vars[i].confint =  confint;
 }
@@ -48,6 +50,10 @@ int recon_system::get_number_measured() {
 
 matrix recon_system::get_covariance_matrix() {
   int n = get_number_measured();
+  // measured variables must precede free variables
+  for(int i=0; i<n; i++){
+    assert(vars[i].confint >= 0);
+  }
   matrix S_x(n, n);
   for(int i=0; i<n; i++){
     S_x.set(i, i, confint2var(vars[i].confint));
