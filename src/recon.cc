@@ -99,9 +99,6 @@ void lin_recon(const vector& r,
 
   vector z = Z.linsolve(g);
   v = z.subvector(0, M+N);
-
-  matrix S_v(S_x);
-  lin_cov_update(S_x, F, S_v);
 }
 
 
