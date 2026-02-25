@@ -299,7 +299,7 @@ matrix& matrix::operator-=(const matrix& src) {
 matrix matrix::operator-() const {
   matrix c(*this);
   gsl_matrix_scale(c.m, -1.0);
-  return c.m;
+  return c;
 }
 
 
@@ -321,7 +321,7 @@ matrix matrix::operator*(const matrix& src) const {
 matrix matrix::operator*(double d) const {
   matrix c(*this);
   gsl_matrix_scale(c.m, d);
-  return c.m;
+  return c;
 }
 
 
@@ -464,7 +464,7 @@ matrix operator*(double d, const matrix& src){
   out << "}" << std::endl
 
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v) {
-  PRINT_START("gls_vector");
+  PRINT_START("gsl_vector");
   PRINT_FIELD(v, size);
   PRINT_FIELD(v, stride);
   PRINT_FIELD(v, data);
@@ -475,7 +475,7 @@ std::ostream& operator<<(std::ostream& out, const gsl_vector& v) {
 }
 
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m) {
-  PRINT_START("gls_matrix");
+  PRINT_START("gsl_matrix");
   PRINT_FIELD(m, size1);
   PRINT_FIELD(m, size2);
   PRINT_FIELD(m, tda);
@@ -486,7 +486,7 @@ std::ostream& operator<<(std::ostream& out, const gsl_matrix& m) {
   return out;
 }
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv) {
-  PRINT_START("gls_matrix_view");
+  PRINT_START("gsl_matrix_view");
   PRINT_FIELD(mv.matrix, size1);
   PRINT_FIELD(mv.matrix, size2);
   PRINT_FIELD(mv.matrix, tda);

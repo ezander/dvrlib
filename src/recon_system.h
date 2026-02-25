@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "gsl_wrapper.h"
 
 
 namespace dvrlib{

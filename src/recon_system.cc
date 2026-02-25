@@ -62,6 +62,8 @@ matrix recon_system::get_covariance_matrix() {
   for(unsigned int k=0; k<extra_covs.size(); k++) {
     int i = find_var(extra_covs[k].var1);
     int j = find_var(extra_covs[k].var2);
+    assert(i >= 0);
+    assert(j >= 0);
     double rho = extra_covs[k].cov_coeff;
     double cov_ii = S_x.get(i, i);
     double cov_jj = S_x.get(j, j);
