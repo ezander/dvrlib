@@ -38,7 +38,7 @@ void recon_system::change_var(const char* name, double val, double confint) {
   vars[i].confint = confint;
 }
 
-int recon_system::get_number_measured() {
+int recon_system::get_number_measured() const {
   int count = 0, n = vars.size();
   for(int i = 0; i < n; i++) {
     if(vars[i].confint >= 0)
@@ -82,6 +82,20 @@ vector recon_system::get_values() {
     x.set(i, vars[i].value);
   }
   return x;
+}
+
+recon_system recon_system::updated(const vector& values,
+                                   const vector& confints) const {
+  dvr_assert(values.size() == (int)vars.size());
+  dvr_assert(confints.size() == get_number_measured());
+  recon_system result(*this);
+  for(int i = 0; i < (int)vars.size(); i++) {
+    result.vars[i].value = values.get(i);
+  }
+  for(int i = 0; i < (int)confints.size(); i++) {
+    result.vars[i].confint = confints.get(i);
+  }
+  return result;
 }
 
 void recon_system::print_vars() const {

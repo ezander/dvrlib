@@ -113,26 +113,31 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   PRINT(S_v);
 
   // compute and print covariance update S_X_new
-  matrix S_xnew(S_x.size1(), S_x.size2());
-  S_xnew = S_x - S_v;
+  matrix S_x_new(S_x.size1(), S_x.size2());
+  S_x_new = S_x - S_v;
 
-  PRINT_TITLE("Matrix S_xnew (compare A33)");
-  PRINT(S_xnew);
+  PRINT_TITLE("Matrix S_x_new (compare A33)");
+  PRINT(S_x_new);
 
-  vector vec_results(x.size());
-  vec_results = x + v;
+  vector x_new(x.size());
+  x_new = x + v;
 
-  PRINT_TITLE("Vector results (compare A34)");
-  PRINT(vec_results);
+  PRINT_TITLE("Vector x_new (compare A34)");
+  PRINT(x_new);
 
-  vector conf_results(S_x.size1());
-  extract_confidence(S_xnew, conf_results);
+  vector confint_new(S_x.size1());
+  extract_confidence(S_x_new, confint_new);
 
-  PRINT_TITLE("conf_results (compare A34)");
-  PRINT(conf_results);
+  PRINT_TITLE("confint_new (compare A34)");
+  PRINT(confint_new);
 
-  PRINT_TITLE("vars");
+  PRINT_TITLE("Original variables and confidences");
   system.print_vars();
+
+  PRINT_TITLE("Updated variables and confidences");
+  auto updated_sys = system.updated(x_new, confint_new);
+  updated_sys.print_vars();
+
 }
 
 void example_VDI2048() {
