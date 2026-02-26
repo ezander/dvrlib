@@ -1,45 +1,43 @@
 #ifndef DVRLIB_RECON_H
 #define DVRLIB_RECON_H
 
-namespace dvrlib{
+namespace dvrlib {
 
 class vector;
 class matrix;
 
-template<class argtype, class restype>
+template <class argtype, class restype>
 class func {
 public:
   virtual restype operator()(const argtype& arg) = 0;
 };
 
-
 void lin_cov_update(const matrix& S_x,
-		    const matrix& F,
-		    matrix& S_v);
+                    const matrix& F,
+                    matrix& S_v);
 
 void lin_recon(const vector& r,
-	       const matrix& S_x,
-	       const matrix& F,
-	       vector& v);
+               const matrix& S_x,
+               const matrix& F,
+               vector& v);
 
 void lin_recon_update(const vector& r,
-		      const matrix& S_x_inv,
-		      const matrix& F,
-		      const vector& v,
-		      vector& dv);
+                      const matrix& S_x_inv,
+                      const matrix& F,
+                      const vector& v,
+                      vector& dv);
 
 int recon(const vector& x,
-	  const matrix& S_x,
-	  func<vector, vector>& f,
-	  func<vector, matrix>& J,
-	  vector& v,
-	  matrix& S_v,
-	  double eps=1e-6,
-	  int maxiter=50);
-
+          const matrix& S_x,
+          func<vector, vector>& f,
+          func<vector, matrix>& J,
+          vector& v,
+          matrix& S_v,
+          double eps = 1e-6,
+          int maxiter = 50);
 
 void extract_confidence(const matrix& S_xnew,
-			vector& conf_results);
+                        vector& conf_results);
 
 /**
    Convert a 95% confidence interval into a variance.
@@ -51,6 +49,6 @@ double confint2var(double confint);
 */
 double var2confint(double var);
 
-} // namespace dvrlib
+}  // namespace dvrlib
 
-#endif // DVRLIB_RECON_H
+#endif  // DVRLIB_RECON_H

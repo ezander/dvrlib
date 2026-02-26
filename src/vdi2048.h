@@ -3,4 +3,4 @@
 
 void example_VDI2048();
 
-#endif // DVRLIB_VDI2048_H
+#endif  // DVRLIB_VDI2048_H

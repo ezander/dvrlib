@@ -9,7 +9,6 @@
 
 using namespace dvrlib;
 
-
 void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   recon_system system;
 
@@ -91,7 +90,7 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   // PRINT(F*S_x);
 
   PRINT_TITLE("Matrix F*X (A17)");
-  PRINT(F*x);
+  PRINT(F * x);
 
   PRINT_SEP;
 
@@ -104,7 +103,7 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
 
   // test that the constraints are fulfilled
   PRINT_TITLE("Constraint fulfillment F*(v+x) (should be close to zero)");
-  PRINT(F*(x+v));
+  PRINT(F * (x + v));
 
   // compute and print covariance S_v
   matrix S_v(S_x.size1(), S_x.size2());
@@ -132,7 +131,6 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   PRINT_TITLE("conf_results (compare A34)");
   PRINT(conf_results);
 }
-
 
 void example_VDI2048() {
   example_VDI2048_1(true, true);

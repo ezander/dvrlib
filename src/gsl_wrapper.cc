@@ -7,26 +7,25 @@
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
 
-namespace dvrlib{
+namespace dvrlib {
 
-void gsl_err_handler(const char * reason,
-		      const char * file,
-		      int line,
-		      int gsl_errno) {
+void gsl_err_handler(const char* reason,
+                     const char* file,
+                     int line,
+                     int gsl_errno) {
   gsl_exception ex = {reason, file, line, gsl_errno};
   throw ex;
 }
 
-void gsl_enable_exceptions(){
+void gsl_enable_exceptions() {
   gsl_set_error_handler(gsl_err_handler);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 // vector class
 ////////////////////////////////////////////////////////////////////////////
 vector::vector() {
-  v = 0; // private ctor only for class vector_view
+  v = 0;  // private ctor only for class vector_view
 }
 
 vector::vector(int n) {
@@ -41,10 +40,9 @@ vector::vector(int n, double x) {
 
 vector::vector(int n, const double* x) {
   v = gsl_vector_alloc(n);
-  gsl_vector_const_view  src = gsl_vector_const_view_array(x, n);
+  gsl_vector_const_view src = gsl_vector_const_view_array(x, n);
   gsl_vector_memcpy(v, &src.vector);
 }
-
 
 vector::vector(const vector& src) {
   v = gsl_vector_alloc(src.size());
@@ -76,12 +74,12 @@ double vector::get(int i) const {
   return gsl_vector_get(v, i);
 }
 
-double vector::operator[](int i){
+double vector::operator[](int i) {
   return gsl_vector_get(v, i);
 }
 
 vector& vector::operator=(const vector& src) {
-  if( &src == this)
+  if(&src == this)
     return *this;
   gsl_vector_memcpy(v, src.v);
   return *this;
@@ -94,7 +92,7 @@ vector& vector::operator+=(const vector& src) {
 
 vector vector::operator+(const vector& src) const {
   vector vec(*this);
-  gsl_vector_add(vec.v , src.v);
+  gsl_vector_add(vec.v, src.v);
   return vec;
 }
 
@@ -105,16 +103,15 @@ vector& vector::operator-=(const vector& src) {
 
 vector vector::operator-(const vector& src) const {
   vector vec(*this);
-  gsl_vector_sub(vec.v , src.v);
+  gsl_vector_sub(vec.v, src.v);
   return vec;
 }
 
 vector vector::operator-() const {
-  vector vec(*this); // -z
+  vector vec(*this);  // -z
   vec = vec * (-1);
   return vec;
 }
-
 
 vector& vector::operator*=(double d) {
   gsl_vector_scale(v, d);
@@ -123,7 +120,7 @@ vector& vector::operator*=(double d) {
 
 vector vector::operator*(double d) const {
   vector vec(*this);
-  gsl_vector_scale(vec.v , d);
+  gsl_vector_scale(vec.v, d);
   return vec;
 }
 
@@ -137,10 +134,9 @@ const vector_view vector::subvector(int k, int n) const {
   return vv;
 }
 
-vector operator*(double d, const vector& src){
+vector operator*(double d, const vector& src) {
   return src * d;
 }
-
 
 double vector::norm1() const {
   return gsl_blas_dasum(v);
@@ -150,12 +146,11 @@ double vector::norm2() const {
   return gsl_blas_dnrm2(v);
 }
 
-
-
-std::ostream& operator<<(std::ostream& out, const vector& vec){
+std::ostream& operator<<(std::ostream& out, const vector& vec) {
   out << "[";
-  for(int i=0; i<vec.size(); i++) {
-    if(i) out << ", ";
+  for(int i = 0; i < vec.size(); i++) {
+    if(i)
+      out << ", ";
     out << vec.get(i);
   }
   out << "]";
@@ -181,21 +176,18 @@ gsl_vector_view* vector_view::gsl_internal() {
 }
 
 vector_view& vector_view::operator=(const vector& src) {
-  if( &src == this)
+  if(&src == this)
     return *this;
   gsl_vector_memcpy(v, src.v);
   return *this;
 }
 
-
-
 ////////////////////////////////////////////////////////////////////////////
 // matrix class
 ////////////////////////////////////////////////////////////////////////////
 
-
 matrix::matrix() {
-  m = 0; // private constructor for matrix_view only
+  m = 0;  // private constructor for matrix_view only
 }
 
 matrix::matrix(int n1, int n2, bool id, const double* diag) {
@@ -205,15 +197,14 @@ matrix::matrix(int n1, int n2, bool id, const double* diag) {
   else
     gsl_matrix_set_identity(m);
   if(diag) {
-    for(int i=0; i<n1 && i<n2; i++)
+    for(int i = 0; i < n1 && i < n2; i++)
       set(i, i, diag[i]);
-
   }
 }
 
 matrix::matrix(int n1, int n2, const double* x) {
   m = gsl_matrix_alloc(n1, n2);
-  gsl_matrix_const_view  src = gsl_matrix_const_view_array(x, n1, n2);
+  gsl_matrix_const_view src = gsl_matrix_const_view_array(x, n1, n2);
   gsl_matrix_memcpy(m, &src.matrix);
 }
 
@@ -256,13 +247,13 @@ double matrix::get(int i, int j) const {
   return gsl_matrix_get(m, i, j);
 }
 
-vector_view matrix::operator[](int i){
-  vector_view row  = gsl_matrix_row(m, i);
+vector_view matrix::operator[](int i) {
+  vector_view row = gsl_matrix_row(m, i);
   return row;
 }
 
 matrix& matrix::operator=(const matrix& src) {
-  if( &src == this)
+  if(&src == this)
     return *this;
   gsl_matrix_memcpy(m, src.m);
   return *this;
@@ -270,29 +261,29 @@ matrix& matrix::operator=(const matrix& src) {
 
 matrix matrix::operator+(const matrix& src) const {
   matrix c(*this);
-  assert(c.size1()==src.size1());
-  assert(c.size2()==src.size2());
+  assert(c.size1() == src.size1());
+  assert(c.size2() == src.size2());
 
-  gsl_matrix_add (c.m , src.m);
+  gsl_matrix_add(c.m, src.m);
   return c;
 }
 
 matrix& matrix::operator+=(const matrix& src) {
-  gsl_matrix_add (m , src.m);
+  gsl_matrix_add(m, src.m);
   return *this;
 }
 
 matrix matrix::operator-(const matrix& src) const {
   matrix c(*this);
-  assert(c.size1()==src.size1());
-  assert(c.size2()==src.size2());
+  assert(c.size1() == src.size1());
+  assert(c.size2() == src.size2());
 
-  gsl_matrix_sub (c.m , src.m);
+  gsl_matrix_sub(c.m, src.m);
   return c;
 }
 
 matrix& matrix::operator-=(const matrix& src) {
-  gsl_matrix_sub (m , src.m);
+  gsl_matrix_sub(m, src.m);
   return *this;
 }
 
@@ -302,19 +293,18 @@ matrix matrix::operator-() const {
   return c;
 }
 
-
 vector matrix::operator*(const vector& src) const {
   vector y(size1());
-  assert(size2()==src.size());
+  assert(size2() == src.size());
   gsl_blas_dgemv(CblasNoTrans, 1.0, m, src.v, 0.0, y.v);
   return y;
 }
 
 matrix matrix::operator*(const matrix& src) const {
   matrix c(size1(), src.size2());
-  assert(size2()==src.size1());
+  assert(size2() == src.size1());
 
-  gsl_blas_dgemm (CblasNoTrans, CblasNoTrans, 1.0, m, src.m, 0.0, c.m);
+  gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m, src.m, 0.0, c.m);
   return c;
 }
 
@@ -324,14 +314,10 @@ matrix matrix::operator*(double d) const {
   return c;
 }
 
-
 matrix& matrix::operator*=(double d) {
   gsl_matrix_scale(m, d);
   return *this;
 }
-
-
-
 
 matrix matrix::transpose() const {
   matrix dest(size2(), size1());
@@ -358,7 +344,6 @@ matrix matrix::inverse() const {
   return B;
 }
 
-
 vector matrix::linsolve(const vector& b) const {
   matrix LU(*this);
   vector x(b.size());
@@ -372,7 +357,7 @@ vector matrix::linsolve(const vector& b) const {
 void matrix::svd(matrix& U, matrix& V, vector& s) const {
   int M = size1();
   int N = size2();
-  assert(M>=N);
+  assert(M >= N);
   U = *this;
   vector work(N);
   gsl_linalg_SV_decomp(U.m, V.m, s.v, work.v);
@@ -381,7 +366,7 @@ void matrix::svd(matrix& U, matrix& V, vector& s) const {
 vector matrix::svd() const {
   int M = size1();
   int N = size2();
-  if(M<N) 
+  if(M < N)
     return transpose().svd();
   vector s(N);
   matrix U(M, N);
@@ -390,37 +375,36 @@ vector matrix::svd() const {
   return s;
 }
 
-
 matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) {
-  assert(k1+n1<=size1());
-  assert(k2+n2<=size2());
+  assert(k1 + n1 <= size1());
+  assert(k2 + n2 <= size2());
   matrix_view mv(gsl_matrix_submatrix(m, k1, k2, n1, n2));
   return mv;
 }
 
 const matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) const {
-  assert(k1+n1<=size1());
-  assert(k2+n2<=size2());
+  assert(k1 + n1 <= size1());
+  assert(k2 + n2 <= size2());
   matrix_view mv(gsl_matrix_submatrix(m, k1, k2, n1, n2));
   return mv;
 }
 
-std::ostream& operator<<(std::ostream& out, const matrix& mat){
-  for(int i=0; i<mat.size1(); i++) {
-    if(i) 
-      out << "]" << std::endl << " [";
+std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+  for(int i = 0; i < mat.size1(); i++) {
+    if(i)
+      out << "]" << std::endl
+          << " [";
     else
       out << "[[";
-    for(int j=0; j<mat.size2(); j++) {
-      if(j) out << ", ";
-      out << mat.get(i,j);
+    for(int j = 0; j < mat.size2(); j++) {
+      if(j)
+        out << ", ";
+      out << mat.get(i, j);
     }
   }
   out << "]]";
   return out;
 }
-
-
 
 ////////////////////////////////////////////////////////////////////////////
 // matrix_view class
@@ -441,26 +425,25 @@ gsl_matrix_view* matrix_view::gsl_internal() {
 }
 
 matrix_view& matrix_view::operator=(const matrix& src) {
-  if( &src == this)
+  if(&src == this)
     return *this;
   gsl_matrix_memcpy(m, src.m);
   return *this;
 }
 
-matrix operator*(double d, const matrix& src){
-    return src * d;
+matrix operator*(double d, const matrix& src) {
+  return src * d;
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 // gsl helpers
 ////////////////////////////////////////////////////////////////////////////
 
-#define PRINT_START(cls)\
+#define PRINT_START(cls) \
   out << cls << " {" << std::endl
-#define PRINT_FIELD(s,field)\
+#define PRINT_FIELD(s, field) \
   out << "  " << #field << ": " << s.field << std::endl
-#define PRINT_END()\
+#define PRINT_END() \
   out << "}" << std::endl
 
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v) {
@@ -497,4 +480,4 @@ std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv) {
   return out;
 }
 
-} // namespace dvrlib
+}  // namespace dvrlib

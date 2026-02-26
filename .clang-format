@@ -1,0 +1,40 @@
+---
+BasedOnStyle: Google
+
+# Indentation
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ContinuationIndentWidth: 2
+
+# Column limit — not enforced in the codebase
+ColumnLimit: 0
+
+# Braces: K&R / Attach (opening brace on same line)
+BreakBeforeBraces: Attach
+
+# Pointer/reference: attached to type (type* name, type& name)
+PointerAlignment: Left
+
+# No space before ( in if/for/while — consistent with if(, for(
+SpaceBeforeParens: Never
+
+# No spaces inside parentheses
+SpacesInParentheses: false
+
+# Namespace contents not indented; closing comment preserved
+NamespaceIndentation: None
+FixNamespaceComments: true
+
+# Access modifiers (public:/private:) at class indent level
+AccessModifierOffset: -2
+
+# Align continuation args to opening paren (matches Emacs c-lineup-arglist)
+AlignAfterOpenBracket: Align
+
+# Don't collapse short functions/ifs to one line
+AllowShortFunctionsOnASingleLine: None
+AllowShortIfStatementsOnASingleLine: Never
+
+# Don't reorder includes — project-first order is intentional
+SortIncludes: Never

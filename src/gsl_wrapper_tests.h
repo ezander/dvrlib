@@ -3,4 +3,4 @@
 
 void gsl_wrapper_test_suite();
 
-#endif // DVRLIB_GSL_WRAPPER_TESTS_H
+#endif  // DVRLIB_GSL_WRAPPER_TESTS_H

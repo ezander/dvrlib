@@ -5,8 +5,7 @@
 #include <string>
 #include "gsl_wrapper.h"
 
-
-namespace dvrlib{
+namespace dvrlib {
 
 /**
    Encapsulates a system to be reconciliated, including variables,
@@ -25,7 +24,7 @@ class recon_system {
     std::string var2;
     double cov_coeff;
   };
-    
+
   std::vector<var> vars;
   std::vector<extra_cov> extra_covs;
 
@@ -41,8 +40,8 @@ public:
    * @param[in] confint The confidence interval
    */
   void add_var(const char* name, double val, double confint);
-  void add_covariance_coeff(const char* name1, const char* name2, 
-			    double cov_coeff);
+  void add_covariance_coeff(const char* name1, const char* name2,
+                            double cov_coeff);
 
   int find_var(const std::string& str);
   void change_var(const char* name, double val, double confint);
@@ -52,6 +51,6 @@ public:
   void print_constraints(const matrix& F);
 };
 
-} // namespace dvrlib
+}  // namespace dvrlib
 
-#endif // DVRLIB_RECON_SYSTEM_H
+#endif  // DVRLIB_RECON_SYSTEM_H

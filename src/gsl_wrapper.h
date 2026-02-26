@@ -7,7 +7,7 @@
 #include <iostream>
 #include <cassert>
 
-namespace dvrlib{
+namespace dvrlib {
 
 struct gsl_exception {
   const char* reason;
@@ -18,12 +18,12 @@ struct gsl_exception {
 
 void gsl_enable_exceptions();
 
-
 class vector_view;
 
 class vector {
   gsl_vector* v;
   vector();
+
 public:
   vector(int n);
   vector(int n, double x);
@@ -60,7 +60,7 @@ public:
 vector operator*(double d, const vector& src);
 std::ostream& operator<<(std::ostream& out, const vector& vec);
 
-class vector_view: public vector {
+class vector_view : public vector {
   gsl_vector_view vv;
   vector_view(gsl_vector_view vv);
 
@@ -73,19 +73,18 @@ public:
   friend class matrix;
 };
 
-
-
 class matrix_view;
 
 class matrix {
   gsl_matrix* m;
   matrix();
+
 public:
-  matrix(int n1, int n2, bool id=false, const double* diag=0);
+  matrix(int n1, int n2, bool id = false, const double* diag = 0);
   matrix(int n1, int n2, const double* x);
-  template<int n>
-    matrix(int n1, int n2, const double (*x)[n]);
-  
+  template <int n>
+  matrix(int n1, int n2, const double (*x)[n]);
+
   matrix(const matrix& src);
   matrix(const gsl_matrix* src);
   ~matrix();
@@ -111,7 +110,7 @@ public:
   matrix operator*(const matrix& src) const;
   matrix operator*(double d) const;
   matrix& operator*=(double d);
- 
+
   matrix transpose() const;
   matrix inverse() const;
   vector linsolve(const vector& b) const;
@@ -123,11 +122,11 @@ public:
   friend class matrix_view;
 };
 
-template<int n>
+template <int n>
 matrix::matrix(int n1, int n2, const double (*x)[n]) {
-  assert(n==n2);
+  assert(n == n2);
   m = gsl_matrix_alloc(n1, n2);
-  gsl_matrix_const_view  src = gsl_matrix_const_view_array(x[0], n1, n2);
+  gsl_matrix_const_view src = gsl_matrix_const_view_array(x[0], n1, n2);
   gsl_matrix_memcpy(m, &src.matrix);
 }
 
@@ -135,7 +134,7 @@ matrix operator*(double d, const matrix& src);
 
 std::ostream& operator<<(std::ostream& out, const matrix& vec);
 
-class matrix_view: public matrix {
+class matrix_view : public matrix {
   gsl_matrix_view mv;
   matrix_view(gsl_matrix_view mv);
 
@@ -147,11 +146,10 @@ public:
   friend class matrix;
 };
 
-
 std::ostream& operator<<(std::ostream& out, const gsl_vector& v);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix& m);
 std::ostream& operator<<(std::ostream& out, const gsl_matrix_view& mv);
 
-} // namespace dvrlib
+}  // namespace dvrlib
 
-#endif // DVRLIB_GSL_WRAPPER_H
+#endif  // DVRLIB_GSL_WRAPPER_H
