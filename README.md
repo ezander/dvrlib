@@ -29,9 +29,9 @@ sudo apt install libgsl-dev cmake build-essential
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Debug   # configure
-cmake --build build                        # build library + test binary
-cmake --build build --target doc           # generate API docs (requires Doxygen)
-rm -rf build                               # clean
+cmake -B build                            # build library + test binary
+cmake -B build --target doc               # generate API docs (requires Doxygen)
+rm -rf build                              # clean (remove build directory)
 ```
 
 Produces `build/libdvrlib.a` (static library) and `build/dvrlib_main` (test binary).
@@ -39,7 +39,7 @@ Produces `build/libdvrlib.a` (static library) and `build/dvrlib_main` (test bina
 ## Running Tests
 
 ```bash
-cmake --build build && build/dvrlib_main
+cmake -B build && build/dvrlib_main
 ```
 
 The test binary runs the GSL wrapper tests, the reconciliation tests, and the VDI 2048 example. A clean exit (return code 0) means all tests pass; an assertion failure or uncaught exception indicates a failure.
