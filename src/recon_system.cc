@@ -22,7 +22,7 @@ void recon_system::add_covariance_coeff(const char* name1, const char* name2,
   extra_covs.push_back(ec);
 }
 
-int recon_system::find_var(const string& str) {
+int recon_system::find_var(const string& str) const {
   int n = vars.size();
   for(int i = 0; i < n; i++) {
     if(vars[i].name == str)
@@ -47,7 +47,7 @@ int recon_system::get_number_measured() const {
   return count;
 }
 
-matrix recon_system::get_covariance_matrix() {
+matrix recon_system::get_covariance_matrix() const {
   int n = get_number_measured();
   // measured variables must precede free variables
   for(int i = 0; i < n; i++) {
@@ -75,7 +75,7 @@ matrix recon_system::get_covariance_matrix() {
   return S_x;
 }
 
-vector recon_system::get_values() {
+vector recon_system::get_values() const {
   int n = vars.size();
   vector x(n);
   for(int i = 0; i < n; i++) {

@@ -37,7 +37,7 @@ public:
   int size() const;
   void set(int i, double val);
   double get(int i) const;
-  double operator[](int i);
+  double operator[](int i) const;
 
   vector& operator=(const vector& src);
   vector& operator+=(const vector& src);
@@ -97,6 +97,7 @@ public:
   void set(int i, int j, double val);
   double get(int i, int j) const;
   vector_view operator[](int i);
+  const vector_view operator[](int i) const;
 
   matrix& operator=(const matrix& src);
 

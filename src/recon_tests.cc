@@ -169,9 +169,9 @@ public:
   EnbiJacobianFunc(EnbiproDummy* _enbi)
       : enbi(_enbi) {
   }
-  virtual matrix operator()(const vector& arg);
+  virtual matrix operator()(const vector& arg) const;
 };
-matrix EnbiJacobianFunc::operator()(const vector& arg) {
+matrix EnbiJacobianFunc::operator()(const vector& arg) const {
   return enbi->getJacobian(arg);
 }
 
@@ -182,9 +182,9 @@ public:
   EnbiResidualFunc(EnbiproDummy* _enbi)
       : enbi(_enbi) {
   }
-  virtual vector operator()(const vector& arg);
+  virtual vector operator()(const vector& arg) const;
 };
-vector EnbiResidualFunc::operator()(const vector& arg) {
+vector EnbiResidualFunc::operator()(const vector& arg) const {
   return enbi->getResidual(arg);
 }
 

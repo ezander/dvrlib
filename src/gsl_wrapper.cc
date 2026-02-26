@@ -73,7 +73,7 @@ double vector::get(int i) const {
   return gsl_vector_get(v, i);
 }
 
-double vector::operator[](int i) {
+double vector::operator[](int i) const {
   return gsl_vector_get(v, i);
 }
 
@@ -247,6 +247,11 @@ double matrix::get(int i, int j) const {
 }
 
 vector_view matrix::operator[](int i) {
+  vector_view row = gsl_matrix_row(m, i);
+  return row;
+}
+
+const vector_view matrix::operator[](int i) const {
   vector_view row = gsl_matrix_row(m, i);
   return row;
 }

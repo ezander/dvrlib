@@ -9,7 +9,7 @@ class matrix;
 template <class argtype, class restype>
 class func {
 public:
-  virtual restype operator()(const argtype& arg) = 0;
+  virtual restype operator()(const argtype& arg) const = 0;
 };
 
 void lin_cov_update(const matrix& S_x,
@@ -29,8 +29,8 @@ void lin_recon_update(const vector& r,
 
 int recon(const vector& x,
           const matrix& S_x,
-          func<vector, vector>& f,
-          func<vector, matrix>& J,
+          const func<vector, vector>& f,
+          const func<vector, matrix>& J,
           vector& v,
           matrix& S_v,
           double eps = 1e-6,

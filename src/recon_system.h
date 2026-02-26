@@ -43,11 +43,11 @@ public:
   void add_covariance_coeff(const char* name1, const char* name2,
                             double cov_coeff);
 
-  int find_var(const std::string& str);
+  int find_var(const std::string& str) const;
   void change_var(const char* name, double val, double confint);
   int get_number_measured() const;
-  matrix get_covariance_matrix();
-  vector get_values();
+  matrix get_covariance_matrix() const;
+  vector get_values() const;
   recon_system updated(const vector& values, const vector& confints) const;
   void print_vars() const;
   void print_constraints(const matrix& F) const;
