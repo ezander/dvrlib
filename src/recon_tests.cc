@@ -1,7 +1,7 @@
-#include <cassert>
 #include <cmath>
 
 #include "recon_tests.h"
+#include "dvr_assert.h"
 #include "recon.h"
 #include "gsl_wrapper.h"
 #include "utils.h"
@@ -9,13 +9,13 @@
 using namespace dvrlib;
 
 #define assert_equal(a, b) \
-  assert((a) == (b))
+  dvr_assert((a) == (b))
 #define assert_almost_equal(a, b) \
-  assert(fabs((a) - (b)) < 1e-7 * (fabs(a) + fabs(b)))
+  dvr_assert(fabs((a) - (b)) < 1e-7 * (fabs(a) + fabs(b)))
 #define assert_vector_almost_equal_upto(a, b, eps) \
-  assert(((a) + (-1 * (b))).norm2() < (eps) * ((a).norm2() + (b).norm2()))
+  dvr_assert(((a) + (-1 * (b))).norm2() < (eps) * ((a).norm2() + (b).norm2()))
 #define assert_vector_almost_equal(a, b) \
-  assert(((a) + (-1 * (b))).norm2() < 1e-7 * ((a).norm2() + (b).norm2()))
+  dvr_assert(((a) + (-1 * (b))).norm2() < 1e-7 * ((a).norm2() + (b).norm2()))
 
 namespace simple_system {
 // m1-m2=0
@@ -201,7 +201,7 @@ void test_recon() {
   matrix S_v(v.size(), v.size());
 
   recon(x, S_x, f, J, v, S_v);
-  assert(f(x + v).norm2() < 1e-6);
+  dvr_assert(f(x + v).norm2() < 1e-6);
   assert_vector_almost_equal_upto(v, v_exp, 1e-3);
 }
 

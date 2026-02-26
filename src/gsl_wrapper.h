@@ -5,7 +5,7 @@
 #include <gsl/gsl_matrix.h>
 
 #include <iostream>
-#include <cassert>
+#include "dvr_assert.h"
 
 namespace dvrlib {
 
@@ -125,7 +125,7 @@ public:
 
 template <int n>
 matrix::matrix(int n1, int n2, const double (*x)[n]) {
-  assert(n == n2);
+  dvr_assert(n == n2);
   m = gsl_matrix_alloc(n1, n2);
   gsl_matrix_const_view src = gsl_matrix_const_view_array(x[0], n1, n2);
   gsl_matrix_memcpy(m, &src.matrix);
