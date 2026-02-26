@@ -6,3 +6,4 @@ doc/html
 Makefile.dep
 /libdvrlib.a
 /src/main
+/build/

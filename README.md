@@ -17,28 +17,29 @@ Given a set of measured values with known uncertainties and a system of constrai
 
 - A C++ compiler with C++11 support (e.g. GCC)
 - [GNU Scientific Library (GSL)](https://www.gnu.org/software/gsl/)
-- GNU Make
+- CMake 3.15+
 
 On Debian/Ubuntu:
 
 ```bash
-sudo apt install libgsl-dev build-essential
+sudo apt install libgsl-dev cmake build-essential
 ```
 
 ## Building
 
 ```bash
-make            # build everything (dependencies, test binary, static library)
-make main       # build the test binary only
-make lib        # build static library libdvrlib.a
-make doc        # generate API docs (requires Doxygen)
-make clean      # remove build artefacts
+cmake -B build -DCMAKE_BUILD_TYPE=Debug   # configure
+cmake --build build                        # build library + test binary
+cmake --build build --target doc           # generate API docs (requires Doxygen)
+rm -rf build                               # clean
 ```
+
+Produces `build/libdvrlib.a` (static library) and `build/dvrlib_main` (test binary).
 
 ## Running Tests
 
 ```bash
-make main && src/main
+cmake --build build && build/dvrlib_main
 ```
 
 The test binary runs the GSL wrapper tests, the reconciliation tests, and the VDI 2048 example. A clean exit (return code 0) means all tests pass; an assertion failure or uncaught exception indicates a failure.
