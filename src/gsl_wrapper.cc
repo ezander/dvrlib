@@ -1,8 +1,7 @@
 #include "gsl_wrapper.h"
-#include "utils.h"
+#include "dvr_assert.h"
 
 #include <cmath>
-#include <cassert>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
@@ -261,8 +260,8 @@ matrix& matrix::operator=(const matrix& src) {
 
 matrix matrix::operator+(const matrix& src) const {
   matrix c(*this);
-  assert(c.size1() == src.size1());
-  assert(c.size2() == src.size2());
+  dvr_assert(c.size1() == src.size1());
+  dvr_assert(c.size2() == src.size2());
 
   gsl_matrix_add(c.m, src.m);
   return c;
@@ -275,8 +274,8 @@ matrix& matrix::operator+=(const matrix& src) {
 
 matrix matrix::operator-(const matrix& src) const {
   matrix c(*this);
-  assert(c.size1() == src.size1());
-  assert(c.size2() == src.size2());
+  dvr_assert(c.size1() == src.size1());
+  dvr_assert(c.size2() == src.size2());
 
   gsl_matrix_sub(c.m, src.m);
   return c;
@@ -295,14 +294,14 @@ matrix matrix::operator-() const {
 
 vector matrix::operator*(const vector& src) const {
   vector y(size1());
-  assert(size2() == src.size());
+  dvr_assert(size2() == src.size());
   gsl_blas_dgemv(CblasNoTrans, 1.0, m, src.v, 0.0, y.v);
   return y;
 }
 
 matrix matrix::operator*(const matrix& src) const {
   matrix c(size1(), src.size2());
-  assert(size2() == src.size1());
+  dvr_assert(size2() == src.size1());
 
   gsl_blas_dgemm(CblasNoTrans, CblasNoTrans, 1.0, m, src.m, 0.0, c.m);
   return c;
@@ -357,7 +356,7 @@ vector matrix::linsolve(const vector& b) const {
 void matrix::svd(matrix& U, matrix& V, vector& s) const {
   int M = size1();
   int N = size2();
-  assert(M >= N);
+  dvr_assert(M >= N);
   U = *this;
   vector work(N);
   gsl_linalg_SV_decomp(U.m, V.m, s.v, work.v);
@@ -376,15 +375,15 @@ vector matrix::svd() const {
 }
 
 matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) {
-  assert(k1 + n1 <= size1());
-  assert(k2 + n2 <= size2());
+  dvr_assert(k1 + n1 <= size1());
+  dvr_assert(k2 + n2 <= size2());
   matrix_view mv(gsl_matrix_submatrix(m, k1, k2, n1, n2));
   return mv;
 }
 
 const matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) const {
-  assert(k1 + n1 <= size1());
-  assert(k2 + n2 <= size2());
+  dvr_assert(k1 + n1 <= size1());
+  dvr_assert(k2 + n2 <= size2());
   matrix_view mv(gsl_matrix_submatrix(m, k1, k2, n1, n2));
   return mv;
 }

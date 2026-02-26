@@ -1,9 +1,9 @@
 #include "gsl_wrapper.h"
 #include "recon.h"
-#include "utils.h"
 #include "recon_system.h"
+#include "dvr_assert.h"
 
-#include <cassert>
+#include <iomanip>
 #include <cmath>
 #include <string>
 
@@ -33,7 +33,7 @@ int recon_system::find_var(const string& str) {
 
 void recon_system::change_var(const char* name, double val, double confint) {
   int i = find_var(name);
-  assert(i >= 0);
+  dvr_assert(i >= 0);
   vars[i].value = val;
   vars[i].confint = confint;
 }
@@ -51,7 +51,7 @@ matrix recon_system::get_covariance_matrix() {
   int n = get_number_measured();
   // measured variables must precede free variables
   for(int i = 0; i < n; i++) {
-    assert(vars[i].confint >= 0);
+    dvr_assert(vars[i].confint >= 0);
   }
   matrix S_x(n, n);
   for(int i = 0; i < n; i++) {
@@ -61,8 +61,10 @@ matrix recon_system::get_covariance_matrix() {
   for(unsigned int k = 0; k < extra_covs.size(); k++) {
     int i = find_var(extra_covs[k].var1);
     int j = find_var(extra_covs[k].var2);
-    assert(i >= 0);
-    assert(j >= 0);
+    dvr_assert(i >= 0);
+    dvr_assert(j >= 0);
+    dvr_assert(i < n);
+    dvr_assert(j < n);
     double rho = extra_covs[k].cov_coeff;
     double cov_ii = S_x.get(i, i);
     double cov_jj = S_x.get(j, j);

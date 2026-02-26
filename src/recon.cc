@@ -1,9 +1,8 @@
-#include <cassert>
 #include <cmath>
 
 #include "recon.h"
 #include "gsl_wrapper.h"
-#include "utils.h"
+#include "dvr_assert.h"
 
 namespace dvrlib {
 
@@ -12,8 +11,8 @@ void lin_cov_update_Streit(const matrix& S_x, const matrix& F, matrix& S_v) {
   int N = F.size2() - M;
   int K = F.size1();
 
-  assert(S_x.size2() == M);
-  assert(N >= 0);
+  dvr_assert(S_x.size2() == M);
+  dvr_assert(N >= 0);
 
   matrix Fs = F.submatrix(0, 0, K, M);
 
@@ -42,8 +41,8 @@ void lin_cov_update_Zander(const matrix& S_x, const matrix& F, matrix& S_v) {
   int K = F.size1();
   int L = M + N + K;
 
-  assert(S_x.size2() == M);
-  assert(N >= 0);
+  dvr_assert(S_x.size2() == M);
+  dvr_assert(N >= 0);
 
   matrix P_m(M, L);
   matrix I_m(M, M, true);
@@ -80,9 +79,9 @@ void lin_recon(const vector& r,
   int N = F.size2() - M;
   int K = F.size1();
 
-  assert(S_x.size2() == M);
-  assert(r.size() == K);
-  assert(v.size() == M + N);
+  dvr_assert(S_x.size2() == M);
+  dvr_assert(r.size() == K);
+  dvr_assert(v.size() == M + N);
 
   matrix Z(M + N + K, M + N + K);
   Z.submatrix(0, 0, M, M) = S_x.inverse();
@@ -105,10 +104,10 @@ void lin_recon_update(const vector& r,
   int N = v.size() - M;
   int K = r.size();
 
-  assert(S_x_inv.size2() == M);
-  assert(F.size1() == K);
-  assert(F.size2() == M + N);
-  assert(dv.size() == M + N);
+  dvr_assert(S_x_inv.size2() == M);
+  dvr_assert(F.size1() == K);
+  dvr_assert(F.size2() == M + N);
+  dvr_assert(dv.size() == M + N);
 
   matrix Z(M + N + K, M + N + K);
   Z.submatrix(0, 0, M, M) = S_x_inv;
@@ -174,8 +173,8 @@ void extract_confidence(const matrix& S_xnew,
   int M = S_xnew.size1();
   int K = conf_results.size();
 
-  assert(S_xnew.size2() == M);
-  assert(K == M);
+  dvr_assert(S_xnew.size2() == M);
+  dvr_assert(K == M);
 
   for(int i = 0; i < K; i++) {
     conf_results.set(i, var2confint(S_xnew.get(i, i)));
