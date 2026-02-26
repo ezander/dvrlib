@@ -3,7 +3,7 @@
 #include "recon_system.h"
 #include "dvr_assert.h"
 
-#include <iomanip>
+#include <cstdio>
 #include <cmath>
 #include <string>
 
@@ -84,7 +84,19 @@ vector recon_system::get_values() {
   return x;
 }
 
-void recon_system::print_constraints(const matrix& F) {
+void recon_system::print_vars() const {
+  printf("%-12s%10s%10s\n", "name", "value", "confint");
+  for(unsigned int i = 0; i < vars.size(); i++) {
+    printf("%-12s%10.3f", vars[i].name.c_str(), vars[i].value);
+    if(vars[i].confint < 0)
+      printf("    (free)");
+    else
+      printf("%10.3f", vars[i].confint);
+    printf("\n");
+  }
+}
+
+void recon_system::print_constraints(const matrix& F) const {
   for(int i = 0; i < F.size1(); i++) {
     bool first = true;
     for(int j = 0; j < F.size2(); j++) {
@@ -93,20 +105,20 @@ void recon_system::print_constraints(const matrix& F) {
         continue;
       if(val > 0) {
         if(!first)
-          std::cout << " + ";
+          printf(" + ");
       } else {
         if(!first)
-          std::cout << " - ";
+          printf(" - ");
         else
-          std::cout << "-";
+          printf("-");
         val = -val;
       }
       if(val != 1)
-        std::cout << val << "*";
-      std::cout << vars[j].name;
+        printf("%g*", val);
+      printf("%s", vars[j].name.c_str());
       first = false;
     }
-    std::cout << " = 0" << std::endl;
+    printf(" = 0\n");
   }
 }
 

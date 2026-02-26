@@ -48,7 +48,8 @@ public:
   int get_number_measured();
   matrix get_covariance_matrix();
   vector get_values();
-  void print_constraints(const matrix& F);
+  void print_vars() const;
+  void print_constraints(const matrix& F) const;
 };
 
 }  // namespace dvrlib

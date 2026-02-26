@@ -1,10 +1,9 @@
+#include <cstdio>
 #include <gsl/gsl_errno.h>
 #include "gsl_wrapper.h"
 #include "gsl_wrapper_tests.h"
 #include "recon_tests.h"
 #include "vdi2048.h"
-
-#include <iostream>
 
 using namespace dvrlib;
 
@@ -16,11 +15,11 @@ int main(void) {
     recon_test_suite();
     example_VDI2048();
   } catch(const gsl_exception& e) {
-    std::cout << "Caught GSL exception" << std::endl;
-    std::cout << "  reason: " << e.reason << std::endl;
-    std::cout << "  file:   " << e.file << std::endl;
-    std::cout << "  line:   " << e.line << std::endl;
-    std::cout << "  gsl_errno: " << e.gsl_errno << std::endl;
+    printf("Caught GSL exception\n");
+    printf("  reason:    %s\n", e.reason);
+    printf("  file:      %s\n", e.file);
+    printf("  line:      %d\n", e.line);
+    printf("  gsl_errno: %d\n", e.gsl_errno);
   }
 
   return 0;

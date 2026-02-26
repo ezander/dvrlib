@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdio>
 
 #include "recon.h"
 #include "gsl_wrapper.h"
@@ -134,7 +135,7 @@ int recon(const vector& x,
 
   for(int iter = 0; iter < maxiter + 1; iter++) {
     if(iter == maxiter) {
-      std::cout << "recon did not converge" << std::endl;
+      printf("recon did not converge\n");
       return 1;
     }
 

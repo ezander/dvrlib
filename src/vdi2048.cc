@@ -130,6 +130,9 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
 
   PRINT_TITLE("conf_results (compare A34)");
   PRINT(conf_results);
+
+  PRINT_TITLE("vars");
+  system.print_vars();
 }
 
 void example_VDI2048() {
