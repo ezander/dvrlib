@@ -61,7 +61,7 @@ std::ostream& operator<<(std::ostream& out, const vector& vec);
 
 class vector_view {
   gsl_vector_view vv;
-  vector_view(gsl_vector_view vv);
+  vector_view(const gsl_vector_view& vv);
 
 public:
   vector_view(const vector_view& src);
@@ -143,7 +143,7 @@ std::ostream& operator<<(std::ostream& out, const matrix& vec);
 
 class matrix_view {
   gsl_matrix_view mv;
-  matrix_view(gsl_matrix_view mv);
+  matrix_view(const gsl_matrix_view& mv);
 
 public:
   matrix_view(const matrix_view& src);

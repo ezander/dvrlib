@@ -1,7 +1,6 @@
 #include "gsl_wrapper.h"
 #include "dvr_assert.h"
 
-#include <cmath>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
@@ -161,7 +160,7 @@ std::ostream& operator<<(std::ostream& out, const vector& vec) {
 // vector_view class
 ////////////////////////////////////////////////////////////////////////////
 
-vector_view::vector_view(gsl_vector_view _vv) {
+vector_view::vector_view(const gsl_vector_view& _vv) {
   vv = _vv;
 }
 
@@ -435,7 +434,7 @@ std::ostream& operator<<(std::ostream& out, const matrix& mat) {
 // matrix_view class
 ////////////////////////////////////////////////////////////////////////////
 
-matrix_view::matrix_view(gsl_matrix_view _mv) {
+matrix_view::matrix_view(const gsl_matrix_view& _mv) {
   mv = _mv;
 }
 
