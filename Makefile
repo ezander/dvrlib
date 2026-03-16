@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 SRCS = $(shell find src test demo -name '*.h' -o -name '*.cc')
 
-.PHONY: all demo test coverage coverage-html check clean
+.PHONY: all demo test coverage coverage-html check doc clean
 
 
 BUILD     = build
@@ -59,6 +59,9 @@ check: $(BUILD)/CMakeCache.txt
 format_source:
 	@echo "--- clang-format ---"
 	@clang-format $(SRCS) -i --verbose
+
+doc: $(BUILD)/CMakeCache.txt
+	cmake --build $(BUILD) --target doc
 
 clean:
 	rm -rf $(BUILD) $(BUILD_COV) $(COV_OUT)

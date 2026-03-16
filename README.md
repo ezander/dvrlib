@@ -50,7 +50,7 @@ make run-coverage-html
 To build the API docs (requires Doxygen):
 
 ```bash
-cmake --build build --target doc
+make doc
 ```
 
 ## Usage Example
