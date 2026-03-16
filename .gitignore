@@ -7,3 +7,5 @@ Makefile.dep
 /libdvrlib.a
 /src/main
 /build/
+/build-cov
+/coverage-html
