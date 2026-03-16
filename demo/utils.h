@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <sstream>
 
+const std::string empty;
+
 #define PRINT(x)                           \
   do {                                     \
     std::ostringstream _s;                 \
@@ -15,7 +17,7 @@
 #define PRINT_TITLE(x)        \
   do {                        \
     PRINT_SEP;                \
-    printf("     %s\n", (x)); \
+    printf("     %s\n", (empty + x).c_str()); \
     PRINT_SEP;                \
   } while(0)
 
