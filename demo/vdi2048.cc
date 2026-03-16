@@ -25,18 +25,18 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   system.add_var("m_D", 2.092, 0.272);
 
   if(keep_free) {
-    system.add_var("m_FD1", 0, -1);
-    system.add_var("m_FD2", 0, -1);
-    system.add_var("m_FD3", 0, -1);
-    system.add_var("m_HDAnz", 0, -1);
+  system.add_var("m_FD1", 0, -1);
+  system.add_var("m_FD2", 0, -1);
+  system.add_var("m_FD3", 0, -1);
+  system.add_var("m_HDAnz", 0, -1);
   }
 
   system.add_covariance_coeff("m_FDKeI", "m_FDKeII", 0.2);
   system.add_covariance_coeff("m_SpI", "m_SpII", 0.4);
 
   if(increase_var) {
-    system.change_var("m_FDKeI", 46.241, 2.500);
-    system.change_var("m_FDKeII", 45.668, 2.500);
+  system.change_var("m_FDKeI", 46.241, 2.500);
+  system.change_var("m_FDKeII", 45.668, 2.500);
   }
 
   // get and print the covariance matrix
@@ -54,25 +54,25 @@ void example_VDI2048_1(bool increase_var = false, bool keep_free = true) {
   //   M_FD2 - M_FD3 = 0
   //   M_HDAnz - M_HDNK = 0
   auto F_with_free = []() -> matrix {
-    double Fc[][15] = {
-      {1, 1, 0, 0, -0.2, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0},
-      {0, 0, 1, 1, -0.6, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0},
-      {0, 0, 0, 0, 0.4, 1, 1, 1, 1, 0, 0, 0, 0, -1, 0},
-      {0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, -1},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
-      {0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1},
-    };
-    return matrix(7, 15, Fc);
+  double Fc[][15] = {
+    {1, 1, 0, 0, -0.2, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0},
+    {0, 0, 1, 1, -0.6, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0},
+    {0, 0, 0, 0, 0.4, 1, 1, 1, 1, 0, 0, 0, 0, -1, 0},
+    {0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, -1},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1},
+  };
+  return matrix(7, 15, Fc);
   };
 
   auto F_without_free = []() -> matrix {
-    double Fc[][11] = {
-      {1, 1, -1, -1, 0.4, 0, 0, 0, 0, 0, 0},
-      {0, 0, 1, 1, -1, -1, -1, -1, -1, 0, 0},
-      {0, 0, 0, 0, 0, 0, 1, 1, 1, -1, 0},
-    };
-    return matrix(3, 11, Fc);
+  double Fc[][11] = {
+    {1, 1, -1, -1, 0.4, 0, 0, 0, 0, 0, 0},
+    {0, 0, 1, 1, -1, -1, -1, -1, -1, 0, 0},
+    {0, 0, 0, 0, 0, 0, 1, 1, 1, -1, 0},
+  };
+  return matrix(3, 11, Fc);
   };
 
   matrix F = keep_free ? F_with_free() : F_without_free();

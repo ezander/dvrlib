@@ -4,7 +4,7 @@
 using namespace dvrlib;
 
 int main() {
-    gsl_enable_exceptions();
-    example_VDI2048();
-    return 0;
+  gsl_enable_exceptions();
+  example_VDI2048();
+  return 0;
 }
