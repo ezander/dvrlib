@@ -1,6 +1,7 @@
 #include "gsl_wrapper.h"
 #include "dvr_assert.h"
 
+#include <iomanip>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
@@ -18,6 +19,32 @@ void gsl_err_handler(const char* reason,
 void gsl_enable_exceptions() {
   gsl_set_error_handler(gsl_err_handler);
 }
+
+class ostream_format_guard {
+public:
+  ostream_format_guard(std::ostream& out, std::streamsize precision)
+      : out_(out),
+        precision_(out.precision()),
+        flags_(out.flags()),
+        fill_(out.fill()) {
+    out_.precision(precision);
+    out_.setf(std::ios::fixed, std::ios::floatfield);
+    // out_.setf(std::ios::internal, std::ios::adjustfield);
+    out_.fill(' ');
+  }
+
+  ~ostream_format_guard() {
+    out_.precision(precision_);
+    out_.flags(flags_);
+    out_.fill(fill_);
+  }
+
+private:
+  std::ostream& out_;
+  std::streamsize precision_;
+  std::ios::fmtflags flags_;
+  char fill_;
+};
 
 ////////////////////////////////////////////////////////////////////////////
 // vector class
@@ -145,7 +172,7 @@ double vector::norm2() const {
   return gsl_blas_dnrm2(v);
 }
 
-std::ostream& operator<<(std::ostream& out, const vector& vec) {
+std::ostream& print_std_format(std::ostream& out, const vector& vec) {
   out << "[";
   for(int i = 0; i < vec.size(); i++) {
     if(i)
@@ -154,6 +181,31 @@ std::ostream& operator<<(std::ostream& out, const vector& vec) {
   }
   out << "]";
   return out;
+}
+
+std::ostream& print_vdi_format(std::ostream& out, const vector& vec) {
+  ostream_format_guard format(out, 3);
+
+  out << "[";
+  for(int i = 0; i < vec.size(); i++) {
+    if(i)
+      out << ", ";
+    auto value = vec.get(i);
+    if(value == 0.0)
+      out << "    0  ";
+    else
+      out << std::setw(7) << value;
+  }
+  out << "]";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const vector& vec) {
+  constexpr bool vdi_format = true;
+  if(vdi_format)
+    return print_vdi_format(out, vec);
+  else
+    return print_std_format(out, vec);
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -413,7 +465,7 @@ const matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) const {
   return mv;
 }
 
-std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+std::ostream& print_std_format(std::ostream& out, const matrix& mat) {
   for(int i = 0; i < mat.size1(); i++) {
     if(i)
       out << "]" << std::endl
@@ -429,6 +481,39 @@ std::ostream& operator<<(std::ostream& out, const matrix& mat) {
   out << "]]";
   return out;
 }
+
+std::ostream& print_vdi_format(std::ostream& out, const matrix& mat) {
+  ostream_format_guard format(out, 4);
+
+  for(int i = 0; i < mat.size1(); i++) {
+    if(!i)
+      out << " [";
+    out << std::endl
+        << "  ";
+
+    for(int j = 0; j < mat.size2(); j++) {
+      if(j)
+        out << " ";
+
+      auto value = mat.get(i, j);
+      if(value == 0.0)
+        out << "    0  ";
+      else
+        out << std::setw(7) << value;
+    }
+  }
+  out << std::endl<< "]";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+  constexpr bool vdi_format = true;
+  if(vdi_format)
+    return print_vdi_format(out, mat);
+  else
+    return print_std_format(out, mat);
+}
+
 
 ////////////////////////////////////////////////////////////////////////////
 // matrix_view class
