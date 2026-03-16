@@ -1,4 +1,7 @@
-.PHONY: all demo test coverage coverage-html clean
+SRCS = $(shell find src test demo -name '*.h' -o -name '*.cc')
+
+.PHONY: all demo test coverage coverage-html check clean
+
 
 BUILD     = build
 BUILD_COV = build-cov
@@ -37,6 +40,12 @@ $(BUILD_COV)/CMakeCache.txt:
 	cmake -B $(BUILD_COV) -S . -DCMAKE_BUILD_TYPE=Debug \
 	    -DCMAKE_CXX_FLAGS="--coverage" \
 	    -DCMAKE_EXE_LINKER_FLAGS="--coverage"
+
+check: $(BUILD)/CMakeCache.txt
+	@echo "--- clang-tidy ---"
+	@find src test demo -name '*.cc' | xargs clang-tidy -p $(BUILD)
+	@echo "--- clang-format ---"
+	@clang-format --dry-run --Werror $(SRCS) && echo "format OK"
 
 clean:
 	rm -rf $(BUILD) $(BUILD_COV) $(COV_OUT)

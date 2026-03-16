@@ -105,40 +105,40 @@ public:
 
 class LinearEnbiproDummy : public EnbiproDummy {
 public:
-  vector getValues() {
+  vector getValues() override {
     vector x(5, mischer_teiler::x);
     return x;
   }
 
-  matrix getCovarianceMatrix() {
+  matrix getCovarianceMatrix() override {
     matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
     return S_x;
   }
 
-  matrix getJacobian(const vector& x) {
+  matrix getJacobian(const vector& x) override {
     matrix F(2, 5, mischer_teiler::F);
     return F;
   }
 
-  vector getResidual(const vector& x) {
+  vector getResidual(const vector& x) override {
     return getJacobian(x) * x;
   }
 };
 
 class QuadraticEnbiproDummy : public EnbiproDummy {
 public:
-  vector getValues() {
+  vector getValues() override {
     vector x(5, mischer_teiler::x);
     x.set(4, 201);
     return x;
   }
 
-  matrix getCovarianceMatrix() {
+  matrix getCovarianceMatrix() override {
     matrix S_x(4, 4, true, mischer_teiler::S_x_diag);
     return S_x;
   }
 
-  matrix getJacobian(const vector& x) {
+  matrix getJacobian(const vector& x) override {
     double d1 = 2 * (x.get(0) + x.get(1) - x.get(4));
     double d2 = 2 * (x.get(2) + x.get(3) - x.get(4));
     double J[][5] = {{d1, d1, 0, 0, -d1}, {0, 0, d2, d2, -d2}};
@@ -146,7 +146,7 @@ public:
     return F;
   }
 
-  vector getResidual(const vector& x) {
+  vector getResidual(const vector& x) override {
     vector r(2);
     r.set(0, pow(x.get(0) + x.get(1) - x.get(4), 2));
     r.set(1, pow(-x.get(2) - x.get(3) + x.get(4), 2));

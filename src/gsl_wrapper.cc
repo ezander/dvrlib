@@ -24,7 +24,7 @@ void gsl_enable_exceptions() {
 // vector class
 ////////////////////////////////////////////////////////////////////////////
 vector::vector() {
-  v = 0;  // private ctor only for class vector_view
+  v = nullptr;  // private ctor only for class vector_view
 }
 
 vector::vector(int n) {
@@ -62,7 +62,7 @@ const gsl_vector* vector::gsl_internal() const {
 }
 
 int vector::size() const {
-  return v->size;
+  return static_cast<int>(v->size);
 }
 
 void vector::set(int i, double val) {
@@ -186,7 +186,7 @@ vector_view& vector_view::operator=(const vector& src) {
 ////////////////////////////////////////////////////////////////////////////
 
 matrix::matrix() {
-  m = 0;  // private constructor for matrix_view only
+  m = nullptr;  // private constructor for matrix_view only
 }
 
 matrix::matrix(int n1, int n2, bool id, const double* diag) {
@@ -195,7 +195,7 @@ matrix::matrix(int n1, int n2, bool id, const double* diag) {
     gsl_matrix_set_zero(m);
   else
     gsl_matrix_set_identity(m);
-  if(diag) {
+  if(diag != nullptr) {
     for(int i = 0; i < n1 && i < n2; i++)
       set(i, i, diag[i]);
   }
@@ -231,11 +231,11 @@ const gsl_matrix* matrix::gsl_internal() const {
 }
 
 int matrix::size1() const {
-  return m->size1;
+  return static_cast<int>(m->size1);
 }
 
 int matrix::size2() const {
-  return m->size2;
+  return static_cast<int>(m->size2);
 }
 
 void matrix::set(int i, int j, double val) {
@@ -340,7 +340,8 @@ struct permutation {
 };
 
 matrix matrix::inverse() const {
-  matrix LU(*this), B(*this);
+  matrix LU(*this);
+  matrix B(*this);
   permutation p(size1());
   int sign;
   gsl_linalg_LU_decomp(LU.m, p.p, &sign);
@@ -444,9 +445,9 @@ matrix operator*(double d, const matrix& src) {
 ////////////////////////////////////////////////////////////////////////////
 
 #define PRINT_START(cls) \
-  out << cls << " {" << std::endl
+  out << (cls) << " {" << std::endl
 #define PRINT_FIELD(s, field) \
-  out << "  " << #field << ": " << s.field << std::endl
+  out << "  " << #field << ": " << (s).field << std::endl
 #define PRINT_END() \
   out << "}" << std::endl
 

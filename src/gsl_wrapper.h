@@ -80,7 +80,7 @@ class matrix {
   matrix();
 
 public:
-  matrix(int n1, int n2, bool id = false, const double* diag = 0);
+  matrix(int n1, int n2, bool id = false, const double* diag = nullptr);
   matrix(int n1, int n2, const double* x);
   template <int n>
   matrix(int n1, int n2, const double (*x)[n]);

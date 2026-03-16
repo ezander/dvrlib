@@ -39,7 +39,8 @@ void recon_system::change_var(const char* name, double val, double confint) {
 }
 
 int recon_system::get_number_measured() const {
-  int count = 0, n = vars.size();
+  int count = 0;
+  int n = vars.size();
   for(int i = 0; i < n; i++) {
     if(vars[i].confint >= 0)
       count++;
