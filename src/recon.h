@@ -9,6 +9,7 @@ class matrix;
 template <class argtype, class restype>
 class func {
 public:
+  virtual ~func() = default;
   virtual restype operator()(const argtype& arg) const = 0;
 };
 

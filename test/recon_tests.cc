@@ -165,7 +165,6 @@ class EnbiJacobianFunc : public func<vector, matrix> {
 
 public:
   EnbiJacobianFunc(EnbiproDummy* _enbi) : enbi(_enbi) {}
-  virtual ~EnbiJacobianFunc() {}
   matrix operator()(const vector& arg) const override;
 };
 matrix EnbiJacobianFunc::operator()(const vector& arg) const {
@@ -177,7 +176,6 @@ class EnbiResidualFunc : public func<vector, vector> {
 
 public:
   EnbiResidualFunc(EnbiproDummy* _enbi) : enbi(_enbi) {}
-  virtual ~EnbiResidualFunc() {}
   vector operator()(const vector& arg) const override;
 };
 vector EnbiResidualFunc::operator()(const vector& arg) const {
