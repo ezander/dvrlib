@@ -16,12 +16,9 @@ void example_VDI2048(bool keep_free) {
     printf("Using Z-algorithm (i.e. not removing free variables first).\n");
     printf("Some intermediate quantities are not computed, but aren't necessary\n");
     printf("for the final result.\n");
-  }
-  else {
+  } else {
     printf("Removing free variables first, very close to original VDI 2048.\n");
   }
-
-
 
   recon_system system;
 
@@ -94,11 +91,10 @@ void example_VDI2048(bool keep_free) {
   matrix F = keep_free ? F_with_free() : F_without_free();
   vector x = system.get_values();
 
-  if( keep_free) {
+  if(keep_free) {
     PRINT_TITLE("Constraints (compare A1-A4 and A12)");
     system.print_constraints(F);
-  }
-  else {
+  } else {
     PRINT_TITLE("Constraints (A13 middle)");
     system.print_constraints(F);
 

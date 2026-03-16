@@ -502,7 +502,8 @@ std::ostream& print_vdi_format(std::ostream& out, const matrix& mat) {
         out << std::setw(7) << value;
     }
   }
-  out << std::endl<< "]";
+  out << std::endl
+      << "]";
   return out;
 }
 
@@ -513,7 +514,6 @@ std::ostream& operator<<(std::ostream& out, const matrix& mat) {
   else
     return print_std_format(out, mat);
 }
-
 
 ////////////////////////////////////////////////////////////////////////////
 // matrix_view class

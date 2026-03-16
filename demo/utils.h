@@ -14,11 +14,11 @@ const std::string empty;
   } while(0)
 #define PRINT_SEP \
   printf("======================================================================\n")
-#define PRINT_TITLE(x)        \
-  do {                        \
-    PRINT_SEP;                \
+#define PRINT_TITLE(x)                        \
+  do {                                        \
+    PRINT_SEP;                                \
     printf("     %s\n", (empty + x).c_str()); \
-    PRINT_SEP;                \
+    PRINT_SEP;                                \
   } while(0)
 
 #endif  // DVRLIB_UTILS_H
