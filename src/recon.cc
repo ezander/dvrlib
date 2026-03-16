@@ -161,12 +161,14 @@ int recon(const vector& x,
   return 0;
 }
 
+static constexpr auto z_alpha_95 = 1.959963984540054;
+
 double confint2var(double confint) {
-  return pow((confint / 1.96), 2);
+  return pow((confint / z_alpha_95), 2);
 }
 
 double var2confint(double var) {
-  return 1.96 * sqrt(var);
+  return z_alpha_95 * sqrt(var);
 }
 
 void extract_confidence(const matrix& S_xnew,
