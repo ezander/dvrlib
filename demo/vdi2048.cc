@@ -9,6 +9,20 @@
 using namespace dvrlib;
 
 void example_VDI2048(bool keep_free) {
+  PRINT_TITLE("VDI 2048 demo - " + (keep_free ? "z-algorithm" : "original") + " version.");
+  printf("Performing validation and reconsiliation algorithm according\n");
+  printf("to VDI 2048 given the Appendix A.\n\n");
+  if(keep_free) {
+    printf("Using Z-algorithm (i.e. not removing free variables first).\n");
+    printf("Some intermediate quantities are not computed, but aren't necessary\n");
+    printf("for the final result.\n");
+  }
+  else {
+    printf("Removing free variables first, very close to original VDI 2048.\n");
+  }
+
+
+
   recon_system system;
 
   // Define the measured variables (A6) (or A7, just for the values)

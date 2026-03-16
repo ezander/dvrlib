@@ -1,3 +1,4 @@
+SHELL := /bin/bash
 SRCS = $(shell find src test demo -name '*.h' -o -name '*.cc')
 
 .PHONY: all demo test coverage coverage-html check clean
@@ -12,6 +13,12 @@ all: $(BUILD)/CMakeCache.txt
 
 run-demo: all
 	$(BUILD)/dvrlib_demo
+
+run-demo-zalg: all
+	$(BUILD)/dvrlib_demo --keep-free
+
+run-demo-compare: all
+	@diff --width=160 -y <($(BUILD)/dvrlib_demo) <($(BUILD)/dvrlib_demo --keep-free) || true
 
 run-tests: all
 	@$(BUILD)/dvrlib_test
