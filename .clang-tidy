@@ -15,5 +15,6 @@ Checks: >
   -readability-function-cognitive-complexity,
   -modernize-avoid-c-arrays,
   -bugprone-easily-swappable-parameters,
-  -modernize-use-equals-default
+  -modernize-use-equals-default,
+  -readability-convert-member-functions-to-static
 HeaderFilterRegex: '.*(src|test|demo)/.*\.(h|cc)$'

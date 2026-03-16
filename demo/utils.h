@@ -16,7 +16,7 @@
 #define PRINT_TITLE(x)                        \
   do {                                        \
     PRINT_SEP;                                \
-    printf("     %s\n", (std::string() + x).c_str()); \
+    printf("     %s\n", (std::string() + (x)).c_str()); \
     PRINT_SEP;                                \
   } while(0)
 
