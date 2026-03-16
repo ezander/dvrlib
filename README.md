@@ -47,7 +47,9 @@ make run-coverage-html
 # open coverage-html/index.html
 ```
 
-To build the API docs (requires Doxygen):
+The API docs are published at https://ezander.github.io/dvrlib/
+
+To build them locally (requires Doxygen):
 
 ```bash
 make doc
