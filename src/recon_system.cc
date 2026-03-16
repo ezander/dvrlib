@@ -23,7 +23,7 @@ void recon_system::add_covariance_coeff(const char* name1, const char* name2,
 }
 
 int recon_system::find_var(const string& str) const {
-  int n = vars.size();
+  int n = static_cast<int>(vars.size());
   for(int i = 0; i < n; i++) {
     if(vars[i].name == str)
       return i;
@@ -39,9 +39,9 @@ void recon_system::change_var(const char* name, double val, double confint) {
 }
 
 int recon_system::get_number_measured() const {
-  int count = 0, n = vars.size();
-  for(int i = 0; i < n; i++) {
-    if(vars[i].confint >= 0)
+  int count = 0;
+  for(const auto& var : vars) {
+    if(var.confint >= 0)
       count++;
   }
   return count;
@@ -58,14 +58,14 @@ matrix recon_system::get_covariance_matrix() const {
     S_x.set(i, i, confint2var(vars[i].confint));
   }
 
-  for(unsigned int k = 0; k < extra_covs.size(); k++) {
-    int i = find_var(extra_covs[k].var1);
-    int j = find_var(extra_covs[k].var2);
+  for(const auto& extra_cov : extra_covs) {
+    int i = find_var(extra_cov.var1);
+    int j = find_var(extra_cov.var2);
     dvr_assert(i >= 0);
     dvr_assert(j >= 0);
     dvr_assert(i < n);
     dvr_assert(j < n);
-    double rho = extra_covs[k].cov_coeff;
+    double rho = extra_cov.cov_coeff;
     double cov_ii = S_x.get(i, i);
     double cov_jj = S_x.get(j, j);
     double cov_ij = rho * sqrt(cov_ii * cov_jj);
@@ -76,7 +76,7 @@ matrix recon_system::get_covariance_matrix() const {
 }
 
 vector recon_system::get_values() const {
-  int n = vars.size();
+  int n = static_cast<int>(vars.size());
   vector x(n);
   for(int i = 0; i < n; i++) {
     x.set(i, vars[i].value);
@@ -86,13 +86,13 @@ vector recon_system::get_values() const {
 
 recon_system recon_system::updated(const vector& values,
                                    const vector& confints) const {
-  dvr_assert(values.size() == (int)vars.size());
+  dvr_assert(values.size() == static_cast<int>(vars.size()));
   dvr_assert(confints.size() == get_number_measured());
   recon_system result(*this);
-  for(int i = 0; i < (int)vars.size(); i++) {
+  for(int i = 0; i < static_cast<int>(vars.size()); i++) {
     result.vars[i].value = values.get(i);
   }
-  for(int i = 0; i < (int)confints.size(); i++) {
+  for(int i = 0; i < confints.size(); i++) {
     result.vars[i].confint = confints.get(i);
   }
   return result;
@@ -100,12 +100,12 @@ recon_system recon_system::updated(const vector& values,
 
 void recon_system::print_vars() const {
   printf("%-12s%10s%10s\n", "name", "value", "confint");
-  for(unsigned int i = 0; i < vars.size(); i++) {
-    printf("%-12s%10.3f", vars[i].name.c_str(), vars[i].value);
-    if(vars[i].confint < 0)
+  for(const auto& var : vars) {
+    printf("%-12s%10.3f", var.name.c_str(), var.value);
+    if(var.confint < 0)
       printf("    (free)");
     else
-      printf("%10.3f", vars[i].confint);
+      printf("%10.3f", var.confint);
     printf("\n");
   }
 }

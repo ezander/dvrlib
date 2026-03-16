@@ -1,7 +1,7 @@
 #include "gsl_wrapper.h"
 #include "dvr_assert.h"
 
-#include <cmath>
+#include <iomanip>
 #include <gsl/gsl_vector.h>
 #include <gsl/gsl_blas.h>
 #include <gsl/gsl_linalg.h>
@@ -20,12 +20,41 @@ void gsl_enable_exceptions() {
   gsl_set_error_handler(gsl_err_handler);
 }
 
+static bool g_vdi_format = false;
+
+void set_vdi_print_format(bool enable) {
+  g_vdi_format = enable;
+}
+
+class ostream_format_guard {
+public:
+  ostream_format_guard(std::ostream& out, std::streamsize precision)
+      : out_(out),
+        precision_(out.precision()),
+        flags_(out.flags()),
+        fill_(out.fill()) {
+    out_.precision(precision);
+    out_.setf(std::ios::fixed, std::ios::floatfield);
+    // out_.setf(std::ios::internal, std::ios::adjustfield);
+    out_.fill(' ');
+  }
+
+  ~ostream_format_guard() {
+    out_.precision(precision_);
+    out_.flags(flags_);
+    out_.fill(fill_);
+  }
+
+private:
+  std::ostream& out_;
+  std::streamsize precision_;
+  std::ios::fmtflags flags_;
+  char fill_;
+};
+
 ////////////////////////////////////////////////////////////////////////////
 // vector class
 ////////////////////////////////////////////////////////////////////////////
-vector::vector() {
-  v = 0;  // private ctor only for class vector_view
-}
 
 vector::vector(int n) {
   v = gsl_vector_alloc(n);
@@ -49,8 +78,7 @@ vector::vector(const vector& src) {
 }
 
 vector::~vector() {
-  if(v && v->owner)
-    gsl_vector_free(v);
+  gsl_vector_free(v);
 }
 
 gsl_vector* vector::gsl_internal() {
@@ -62,7 +90,7 @@ const gsl_vector* vector::gsl_internal() const {
 }
 
 int vector::size() const {
-  return v->size;
+  return static_cast<int>(v->size);
 }
 
 void vector::set(int i, double val) {
@@ -81,6 +109,11 @@ vector& vector::operator=(const vector& src) {
   if(&src == this)
     return *this;
   gsl_vector_memcpy(v, src.v);
+  return *this;
+}
+
+vector& vector::operator=(const vector_view& src) {
+  gsl_vector_memcpy(v, src.gsl_internal());
   return *this;
 }
 
@@ -145,7 +178,7 @@ double vector::norm2() const {
   return gsl_blas_dnrm2(v);
 }
 
-std::ostream& operator<<(std::ostream& out, const vector& vec) {
+std::ostream& print_std_format(std::ostream& out, const vector& vec) {
   out << "[";
   for(int i = 0; i < vec.size(); i++) {
     if(i)
@@ -156,38 +189,77 @@ std::ostream& operator<<(std::ostream& out, const vector& vec) {
   return out;
 }
 
+std::ostream& print_vdi_format(std::ostream& out, const vector& vec) {
+  ostream_format_guard format(out, 3);
+
+  out << "[";
+  for(int i = 0; i < vec.size(); i++) {
+    if(i)
+      out << ", ";
+    auto value = vec.get(i);
+    if(std::abs(value) < 1e-4)
+      out << "    0  ";
+    else
+      out << std::setw(7) << value;
+  }
+  out << "]";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const vector& vec) {
+  if(g_vdi_format)
+    return print_vdi_format(out, vec);
+  else
+    return print_std_format(out, vec);
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // vector_view class
 ////////////////////////////////////////////////////////////////////////////
 
-vector_view::vector_view(gsl_vector_view _vv) {
+vector_view::vector_view(const gsl_vector_view& _vv) {
   vv = _vv;
-  v = &vv.vector;
 }
 
 vector_view::vector_view(const vector_view& src) {
   vv = src.vv;
-  v = &vv.vector;
 }
 
-gsl_vector_view* vector_view::gsl_internal() {
-  return &vv;
+int vector_view::size() const {
+  return static_cast<int>(vv.vector.size);
+}
+
+double vector_view::get(int i) const {
+  return gsl_vector_get(&vv.vector, i);
+}
+
+void vector_view::set(int i, double val) {
+  gsl_vector_set(&vv.vector, i, val);
+}
+
+const gsl_vector* vector_view::gsl_internal() const {
+  return &vv.vector;
 }
 
 vector_view& vector_view::operator=(const vector& src) {
-  if(&src == this)
-    return *this;
-  gsl_vector_memcpy(v, src.v);
+  gsl_vector_memcpy(&vv.vector, src.gsl_internal());
   return *this;
+}
+
+vector_view& vector_view::operator=(const vector_view& src) {
+  gsl_vector_memcpy(&vv.vector, &src.vv.vector);
+  return *this;
+}
+
+vector_view::operator vector() const {
+  vector result(size());
+  gsl_vector_memcpy(result.gsl_internal(), &vv.vector);
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 // matrix class
 ////////////////////////////////////////////////////////////////////////////
-
-matrix::matrix() {
-  m = 0;  // private constructor for matrix_view only
-}
 
 matrix::matrix(int n1, int n2, bool id, const double* diag) {
   m = gsl_matrix_alloc(n1, n2);
@@ -195,7 +267,7 @@ matrix::matrix(int n1, int n2, bool id, const double* diag) {
     gsl_matrix_set_zero(m);
   else
     gsl_matrix_set_identity(m);
-  if(diag) {
+  if(diag != nullptr) {
     for(int i = 0; i < n1 && i < n2; i++)
       set(i, i, diag[i]);
   }
@@ -218,8 +290,7 @@ matrix::matrix(const gsl_matrix* src) {
 }
 
 matrix::~matrix() {
-  if(m && m->owner)
-    gsl_matrix_free(m);
+  gsl_matrix_free(m);
 }
 
 gsl_matrix* matrix::gsl_internal() {
@@ -231,11 +302,11 @@ const gsl_matrix* matrix::gsl_internal() const {
 }
 
 int matrix::size1() const {
-  return m->size1;
+  return static_cast<int>(m->size1);
 }
 
 int matrix::size2() const {
-  return m->size2;
+  return static_cast<int>(m->size2);
 }
 
 void matrix::set(int i, int j, double val) {
@@ -260,6 +331,11 @@ matrix& matrix::operator=(const matrix& src) {
   if(&src == this)
     return *this;
   gsl_matrix_memcpy(m, src.m);
+  return *this;
+}
+
+matrix& matrix::operator=(const matrix_view& src) {
+  gsl_matrix_memcpy(m, src.gsl_internal());
   return *this;
 }
 
@@ -340,7 +416,8 @@ struct permutation {
 };
 
 matrix matrix::inverse() const {
-  matrix LU(*this), B(*this);
+  matrix LU(*this);
+  matrix B(*this);
   permutation p(size1());
   int sign;
   gsl_linalg_LU_decomp(LU.m, p.p, &sign);
@@ -393,7 +470,7 @@ const matrix_view matrix::submatrix(int k1, int k2, int n1, int n2) const {
   return mv;
 }
 
-std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+std::ostream& print_std_format(std::ostream& out, const matrix& mat) {
   for(int i = 0; i < mat.size1(); i++) {
     if(i)
       out << "]" << std::endl
@@ -410,29 +487,84 @@ std::ostream& operator<<(std::ostream& out, const matrix& mat) {
   return out;
 }
 
+std::ostream& print_vdi_format(std::ostream& out, const matrix& mat) {
+  ostream_format_guard format(out, 4);
+
+  for(int i = 0; i < mat.size1(); i++) {
+    if(!i)
+      out << " [";
+    out << std::endl
+        << "  ";
+
+    for(int j = 0; j < mat.size2(); j++) {
+      if(j)
+        out << " ";
+
+      auto value = mat.get(i, j);
+      if(std::abs(value) < 1e-4)
+        out << "    0  ";
+      else
+        out << std::setw(7) << value;
+    }
+  }
+  out << std::endl
+      << "]";
+  return out;
+}
+
+std::ostream& operator<<(std::ostream& out, const matrix& mat) {
+  if(g_vdi_format)
+    return print_vdi_format(out, mat);
+  else
+    return print_std_format(out, mat);
+}
+
 ////////////////////////////////////////////////////////////////////////////
 // matrix_view class
 ////////////////////////////////////////////////////////////////////////////
 
-matrix_view::matrix_view(gsl_matrix_view _mv) {
+matrix_view::matrix_view(const gsl_matrix_view& _mv) {
   mv = _mv;
-  m = &mv.matrix;
 }
 
 matrix_view::matrix_view(const matrix_view& src) {
   mv = src.mv;
-  m = &mv.matrix;
 }
 
-gsl_matrix_view* matrix_view::gsl_internal() {
-  return &mv;
+int matrix_view::size1() const {
+  return static_cast<int>(mv.matrix.size1);
+}
+
+int matrix_view::size2() const {
+  return static_cast<int>(mv.matrix.size2);
+}
+
+double matrix_view::get(int i, int j) const {
+  return gsl_matrix_get(&mv.matrix, i, j);
+}
+
+void matrix_view::set(int i, int j, double val) {
+  gsl_matrix_set(&mv.matrix, i, j, val);
+}
+
+const gsl_matrix* matrix_view::gsl_internal() const {
+  return &mv.matrix;
 }
 
 matrix_view& matrix_view::operator=(const matrix& src) {
-  if(&src == this)
-    return *this;
-  gsl_matrix_memcpy(m, src.m);
+  gsl_matrix_memcpy(&mv.matrix, src.gsl_internal());
   return *this;
+}
+
+matrix_view& matrix_view::operator=(const matrix_view& src) {
+  gsl_matrix_memcpy(&mv.matrix, &src.mv.matrix);
+  return *this;
+}
+
+matrix_view::operator matrix() const {
+  matrix result(size1(), size2());
+  gsl_matrix_memcpy(result.gsl_internal(), &mv.matrix);
+  return result;
 }
 
 matrix operator*(double d, const matrix& src) {
@@ -444,9 +576,9 @@ matrix operator*(double d, const matrix& src) {
 ////////////////////////////////////////////////////////////////////////////
 
 #define PRINT_START(cls) \
-  out << cls << " {" << std::endl
+  out << (cls) << " {" << std::endl
 #define PRINT_FIELD(s, field) \
-  out << "  " << #field << ": " << s.field << std::endl
+  out << "  " << #field << ": " << (s).field << std::endl
 #define PRINT_END() \
   out << "}" << std::endl
 

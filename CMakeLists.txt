@@ -25,18 +25,18 @@ target_link_libraries(dvrlib PUBLIC GSL::gsl GSL::gslcblas)
 target_compile_options(dvrlib PRIVATE -Wall)
 
 # Tests
-add_executable(dvrlib_main
+add_executable(dvrlib_test
     test/main.cc
     test/gsl_wrapper_tests.cc
     test/recon_tests.cc
     test/vdi2048_test.cc
 )
-target_link_libraries(dvrlib_main PRIVATE dvrlib Catch2::Catch2)
-target_compile_options(dvrlib_main PRIVATE -Wall)
+target_link_libraries(dvrlib_test PRIVATE dvrlib Catch2::Catch2)
+target_compile_options(dvrlib_test PRIVATE -Wall)
 
 include(CTest)
 include(Catch)
-catch_discover_tests(dvrlib_main)
+catch_discover_tests(dvrlib_test)
 
 # Demo
 add_executable(dvrlib_demo demo/vdi2048_demo.cc demo/vdi2048.cc)

@@ -25,24 +25,33 @@ On Debian/Ubuntu:
 sudo apt install libgsl-dev cmake build-essential
 ```
 
-## Building
+## Building and Testing
 
 ```bash
-cmake -B build -DCMAKE_BUILD_TYPE=Debug   # configure
-cmake -B build                            # build library + test binary
-cmake -B build --target doc               # generate API docs (requires Doxygen)
-rm -rf build                              # clean (remove build directory)
+make                   # configure (if needed) and build
+make run-tests         # build and run tests
+make run-demo          # build and run the VDI 2048 demo
+make run-demo-zalg     # same, using the Z-algorithm (keeps free variables)
+make run-demo-compare  # show both variants side by side
+make run-coverage      # build with coverage flags and show per-file line coverage
+make run-coverage-html # same, but generate HTML report (requires lcov)
+make check             # run clang-format check
+make clean             # remove all build directories
 ```
 
-Produces `build/libdvrlib.a` (static library) and `build/dvrlib_main` (test binary).
-
-## Running Tests
+For the HTML coverage report:
 
 ```bash
-cmake -B build && build/dvrlib_main
+sudo apt install lcov
+make run-coverage-html
+# open coverage-html/index.html
 ```
 
-The test binary runs the GSL wrapper tests, the reconciliation tests, and the VDI 2048 example. A clean exit (return code 0) means all tests pass; an assertion failure or uncaught exception indicates a failure.
+To build the API docs (requires Doxygen):
+
+```bash
+make doc
+```
 
 ## Usage Example
 
@@ -80,13 +89,18 @@ int main() {
 
 ```
 src/
-  gsl_wrapper.{h,cc}       GSL vector/matrix RAII wrappers
-  gsl_wrapper_tests.{h,cc} Tests for the wrapper layer
-  recon.{h,cc}              Reconciliation algorithms
-  recon_system.{h,cc}       High-level system description
-  recon_tests.{h,cc}        Tests for reconciliation
-  vdi2048.{h,cc}            VDI 2048 worked example
-  main.cc                   Test runner entry point
+  gsl_wrapper.{h,cc}    GSL vector/matrix RAII wrappers
+  recon.{h,cc}          Reconciliation algorithms
+  recon_system.{h,cc}   High-level system description
+test/
+  main.cc               Catch2 test runner entry point
+  gsl_wrapper_tests.cc  Tests for the wrapper layer
+  recon_tests.cc        Tests for reconciliation
+  vdi2048_test.cc       VDI 2048 regression test
+  custom_reporter.h     Custom Catch2 summary listener
+demo/
+  vdi2048.{h,cc}        VDI 2048 worked example
+  vdi2048_demo.cc       Demo entry point
 ```
 
 ## License
