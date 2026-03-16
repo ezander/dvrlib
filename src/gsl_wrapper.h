@@ -22,7 +22,6 @@ class vector_view;
 
 class vector {
   gsl_vector* v;
-  vector();
 
 public:
   vector(int n);
@@ -40,6 +39,7 @@ public:
   double operator[](int i) const;
 
   vector& operator=(const vector& src);
+  vector& operator=(const vector_view& src);
   vector& operator+=(const vector& src);
   vector operator+(const vector& src) const;
   vector& operator-=(const vector& src);
@@ -53,21 +53,27 @@ public:
 
   vector_view subvector(int k, int n);
   const vector_view subvector(int k, int n) const;
-  friend class vector_view;
   friend class matrix;
 };
 
 vector operator*(double d, const vector& src);
 std::ostream& operator<<(std::ostream& out, const vector& vec);
 
-class vector_view : public vector {
+class vector_view {
   gsl_vector_view vv;
   vector_view(gsl_vector_view vv);
 
 public:
   vector_view(const vector_view& src);
-  gsl_vector_view* gsl_internal();
+
+  int size() const;
+  double get(int i) const;
+  void set(int i, double val);
+  const gsl_vector* gsl_internal() const;
+
   vector_view& operator=(const vector& src);
+  vector_view& operator=(const vector_view& src);
+  operator vector() const;
 
   friend class vector;
   friend class matrix;
@@ -77,7 +83,6 @@ class matrix_view;
 
 class matrix {
   gsl_matrix* m;
-  matrix();
 
 public:
   matrix(int n1, int n2, bool id = false, const double* diag = nullptr);
@@ -100,6 +105,7 @@ public:
   const vector_view operator[](int i) const;
 
   matrix& operator=(const matrix& src);
+  matrix& operator=(const matrix_view& src);
 
   matrix operator+(const matrix& src) const;
   matrix& operator+=(const matrix& src);
@@ -135,14 +141,22 @@ matrix operator*(double d, const matrix& src);
 
 std::ostream& operator<<(std::ostream& out, const matrix& vec);
 
-class matrix_view : public matrix {
+class matrix_view {
   gsl_matrix_view mv;
   matrix_view(gsl_matrix_view mv);
 
 public:
   matrix_view(const matrix_view& src);
-  gsl_matrix_view* gsl_internal();
+
+  int size1() const;
+  int size2() const;
+  double get(int i, int j) const;
+  void set(int i, int j, double val);
+  const gsl_matrix* gsl_internal() const;
+
   matrix_view& operator=(const matrix& src);
+  matrix_view& operator=(const matrix_view& src);
+  operator matrix() const;
 
   friend class matrix;
 };

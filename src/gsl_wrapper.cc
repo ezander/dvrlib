@@ -23,9 +23,6 @@ void gsl_enable_exceptions() {
 ////////////////////////////////////////////////////////////////////////////
 // vector class
 ////////////////////////////////////////////////////////////////////////////
-vector::vector() {
-  v = nullptr;  // private ctor only for class vector_view
-}
 
 vector::vector(int n) {
   v = gsl_vector_alloc(n);
@@ -49,8 +46,7 @@ vector::vector(const vector& src) {
 }
 
 vector::~vector() {
-  if(v && v->owner)
-    gsl_vector_free(v);
+  gsl_vector_free(v);
 }
 
 gsl_vector* vector::gsl_internal() {
@@ -81,6 +77,11 @@ vector& vector::operator=(const vector& src) {
   if(&src == this)
     return *this;
   gsl_vector_memcpy(v, src.v);
+  return *this;
+}
+
+vector& vector::operator=(const vector_view& src) {
+  gsl_vector_memcpy(v, src.gsl_internal());
   return *this;
 }
 
@@ -162,32 +163,47 @@ std::ostream& operator<<(std::ostream& out, const vector& vec) {
 
 vector_view::vector_view(gsl_vector_view _vv) {
   vv = _vv;
-  v = &vv.vector;
 }
 
 vector_view::vector_view(const vector_view& src) {
   vv = src.vv;
-  v = &vv.vector;
 }
 
-gsl_vector_view* vector_view::gsl_internal() {
-  return &vv;
+int vector_view::size() const {
+  return static_cast<int>(vv.vector.size);
+}
+
+double vector_view::get(int i) const {
+  return gsl_vector_get(&vv.vector, i);
+}
+
+void vector_view::set(int i, double val) {
+  gsl_vector_set(&vv.vector, i, val);
+}
+
+const gsl_vector* vector_view::gsl_internal() const {
+  return &vv.vector;
 }
 
 vector_view& vector_view::operator=(const vector& src) {
-  if(&src == this)
-    return *this;
-  gsl_vector_memcpy(v, src.v);
+  gsl_vector_memcpy(&vv.vector, src.gsl_internal());
   return *this;
+}
+
+vector_view& vector_view::operator=(const vector_view& src) {
+  gsl_vector_memcpy(&vv.vector, &src.vv.vector);
+  return *this;
+}
+
+vector_view::operator vector() const {
+  vector result(size());
+  gsl_vector_memcpy(result.gsl_internal(), &vv.vector);
+  return result;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 // matrix class
 ////////////////////////////////////////////////////////////////////////////
-
-matrix::matrix() {
-  m = nullptr;  // private constructor for matrix_view only
-}
 
 matrix::matrix(int n1, int n2, bool id, const double* diag) {
   m = gsl_matrix_alloc(n1, n2);
@@ -218,8 +234,7 @@ matrix::matrix(const gsl_matrix* src) {
 }
 
 matrix::~matrix() {
-  if(m && m->owner)
-    gsl_matrix_free(m);
+  gsl_matrix_free(m);
 }
 
 gsl_matrix* matrix::gsl_internal() {
@@ -260,6 +275,11 @@ matrix& matrix::operator=(const matrix& src) {
   if(&src == this)
     return *this;
   gsl_matrix_memcpy(m, src.m);
+  return *this;
+}
+
+matrix& matrix::operator=(const matrix_view& src) {
+  gsl_matrix_memcpy(m, src.gsl_internal());
   return *this;
 }
 
@@ -417,23 +437,46 @@ std::ostream& operator<<(std::ostream& out, const matrix& mat) {
 
 matrix_view::matrix_view(gsl_matrix_view _mv) {
   mv = _mv;
-  m = &mv.matrix;
 }
 
 matrix_view::matrix_view(const matrix_view& src) {
   mv = src.mv;
-  m = &mv.matrix;
 }
 
-gsl_matrix_view* matrix_view::gsl_internal() {
-  return &mv;
+int matrix_view::size1() const {
+  return static_cast<int>(mv.matrix.size1);
+}
+
+int matrix_view::size2() const {
+  return static_cast<int>(mv.matrix.size2);
+}
+
+double matrix_view::get(int i, int j) const {
+  return gsl_matrix_get(&mv.matrix, i, j);
+}
+
+void matrix_view::set(int i, int j, double val) {
+  gsl_matrix_set(&mv.matrix, i, j, val);
+}
+
+const gsl_matrix* matrix_view::gsl_internal() const {
+  return &mv.matrix;
 }
 
 matrix_view& matrix_view::operator=(const matrix& src) {
-  if(&src == this)
-    return *this;
-  gsl_matrix_memcpy(m, src.m);
+  gsl_matrix_memcpy(&mv.matrix, src.gsl_internal());
   return *this;
+}
+
+matrix_view& matrix_view::operator=(const matrix_view& src) {
+  gsl_matrix_memcpy(&mv.matrix, &src.mv.matrix);
+  return *this;
+}
+
+matrix_view::operator matrix() const {
+  matrix result(size1(), size2());
+  gsl_matrix_memcpy(result.gsl_internal(), &mv.matrix);
+  return result;
 }
 
 matrix operator*(double d, const matrix& src) {
