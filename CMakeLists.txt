@@ -6,6 +6,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(GSL REQUIRED)
 
+include(FetchContent)
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG        v3.8.0
+)
+FetchContent_MakeAvailable(Catch2)
+
 # Core library
 add_library(dvrlib STATIC
     src/gsl_wrapper.cc
@@ -23,8 +31,12 @@ add_executable(dvrlib_main
     src/gsl_wrapper_tests.cc
     src/recon_tests.cc
 )
-target_link_libraries(dvrlib_main PRIVATE dvrlib)
+target_link_libraries(dvrlib_main PRIVATE dvrlib Catch2::Catch2)
 target_compile_options(dvrlib_main PRIVATE -Wall)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(dvrlib_main)
 
 # Documentation (optional — requires Doxygen)
 find_package(Doxygen)

@@ -1,29 +1,14 @@
-#include <cstdio>
-#include <gsl/gsl_errno.h>
+#include <catch2/catch_all.hpp>
 #include "gsl_wrapper.h"
-#include "dvr_assert.h"
-#include "gsl_wrapper_tests.h"
-#include "recon_tests.h"
 #include "vdi2048.h"
 
 using namespace dvrlib;
 
-int main(void) {
-  gsl_enable_exceptions();
+int main(int argc, char* argv[]) {
+    gsl_enable_exceptions();
+    return Catch::Session().run(argc, argv);
+}
 
-  try {
-    gsl_wrapper_test_suite();
-    recon_test_suite();
+TEST_CASE("VDI2048 example") {
     example_VDI2048();
-  } catch(const dvrlib::assertion_error& e) {
-    printf("Caught assertion error: %s\n", e.what());
-  } catch(const gsl_exception& e) {
-    printf("Caught GSL exception\n");
-    printf("  reason:    %s\n", e.reason);
-    printf("  file:      %s\n", e.file);
-    printf("  line:      %d\n", e.line);
-    printf("  gsl_errno: %d\n", e.gsl_errno);
-  }
-
-  return 0;
 }
