@@ -3,8 +3,7 @@
 
 #include <cstdio>
 #include <sstream>
-
-const std::string empty;
+#include <string>
 
 #define PRINT(x)                           \
   do {                                     \
@@ -17,7 +16,7 @@ const std::string empty;
 #define PRINT_TITLE(x)                        \
   do {                                        \
     PRINT_SEP;                                \
-    printf("     %s\n", (empty + x).c_str()); \
+    printf("     %s\n", (std::string() + x).c_str()); \
     PRINT_SEP;                                \
   } while(0)
 
