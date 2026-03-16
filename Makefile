@@ -10,13 +10,13 @@ COV_OUT   = coverage-html
 all: $(BUILD)/CMakeCache.txt
 	cmake --build $(BUILD) -- -s
 
-demo: all
+run-demo: all
 	$(BUILD)/dvrlib_demo
 
-test: all
+run-tests: all
 	@$(BUILD)/dvrlib_test
 
-coverage: $(BUILD_COV)/CMakeCache.txt
+run-coverage: $(BUILD_COV)/CMakeCache.txt
 	cmake --build $(BUILD_COV) -- -s
 	$(BUILD_COV)/dvrlib_test
 	@cd $(BUILD_COV)/CMakeFiles/dvrlib.dir/src && \
@@ -24,14 +24,15 @@ coverage: $(BUILD_COV)/CMakeCache.txt
 	        | awk '/File.*\/src\/[^/]+\.cc/{f=1; print} f && /Lines executed/{print; f=0}'; \
 	    rm -f *.gcov 2>/dev/null || true
 
-coverage-html: $(BUILD_COV)/CMakeCache.txt
+run-coverage-html: $(BUILD_COV)/CMakeCache.txt
 	@which lcov > /dev/null 2>&1 || { echo "lcov not found. Install with: sudo apt install lcov"; exit 1; }
 	cmake --build $(BUILD_COV) -- -s
 	$(BUILD_COV)/dvrlib_test
 	lcov --capture --directory $(BUILD_COV) --output-file $(BUILD_COV)/coverage.info
 	lcov --remove $(BUILD_COV)/coverage.info '*/build-cov/_deps/*' '/usr/*' --output-file $(BUILD_COV)/coverage.info
 	genhtml $(BUILD_COV)/coverage.info --output-directory $(COV_OUT)
-	@echo "Report: $(COV_OUT)/index.html"
+	@echo "================================================="
+	@echo "Report written to: $(COV_OUT)/index.html"
 
 $(BUILD)/CMakeCache.txt:
 	cmake -B $(BUILD) -S . -DCMAKE_BUILD_TYPE=Debug
