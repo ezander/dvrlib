@@ -28,19 +28,22 @@ sudo apt install libgsl-dev cmake build-essential
 ## Building and Testing
 
 ```bash
-make          # configure (if needed) and build
-make test     # build and run tests
-make demo     # build and run the VDI 2048 demo
-make coverage # build with coverage flags and show per-file line coverage
-make coverage-html  # same, but generate HTML report (requires lcov)
-make clean    # remove all build directories
+make                   # configure (if needed) and build
+make run-tests         # build and run tests
+make run-demo          # build and run the VDI 2048 demo
+make run-demo-zalg     # same, using the Z-algorithm (keeps free variables)
+make run-demo-compare  # show both variants side by side
+make run-coverage      # build with coverage flags and show per-file line coverage
+make run-coverage-html # same, but generate HTML report (requires lcov)
+make check             # run clang-format check
+make clean             # remove all build directories
 ```
 
 For the HTML coverage report:
 
 ```bash
 sudo apt install lcov
-make coverage-html
+make run-coverage-html
 # open coverage-html/index.html
 ```
 
@@ -94,7 +97,7 @@ test/
   gsl_wrapper_tests.cc  Tests for the wrapper layer
   recon_tests.cc        Tests for reconciliation
   vdi2048_test.cc       VDI 2048 regression test
-  custom_reporter.hpp   Custom Catch2 summary listener
+  custom_reporter.h     Custom Catch2 summary listener
 demo/
   vdi2048.{h,cc}        VDI 2048 worked example
   vdi2048_demo.cc       Demo entry point
