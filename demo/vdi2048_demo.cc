@@ -28,6 +28,7 @@ int main(int argc, char* argv[]) {
   }
 
   gsl_enable_exceptions();
+  set_vdi_print_format(true);
   example_VDI2048(keep_free);
   return 0;
 }

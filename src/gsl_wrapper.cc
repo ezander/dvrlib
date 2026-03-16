@@ -20,6 +20,12 @@ void gsl_enable_exceptions() {
   gsl_set_error_handler(gsl_err_handler);
 }
 
+static bool g_vdi_format = false;
+
+void set_vdi_print_format(bool enable) {
+  g_vdi_format = enable;
+}
+
 class ostream_format_guard {
 public:
   ostream_format_guard(std::ostream& out, std::streamsize precision)
@@ -191,7 +197,7 @@ std::ostream& print_vdi_format(std::ostream& out, const vector& vec) {
     if(i)
       out << ", ";
     auto value = vec.get(i);
-    if(value == 0.0)
+    if(std::abs(value) < 1e-4)
       out << "    0  ";
     else
       out << std::setw(7) << value;
@@ -201,8 +207,7 @@ std::ostream& print_vdi_format(std::ostream& out, const vector& vec) {
 }
 
 std::ostream& operator<<(std::ostream& out, const vector& vec) {
-  constexpr bool vdi_format = true;
-  if(vdi_format)
+  if(g_vdi_format)
     return print_vdi_format(out, vec);
   else
     return print_std_format(out, vec);
@@ -496,7 +501,7 @@ std::ostream& print_vdi_format(std::ostream& out, const matrix& mat) {
         out << " ";
 
       auto value = mat.get(i, j);
-      if(value == 0.0)
+      if(std::abs(value) < 1e-4)
         out << "    0  ";
       else
         out << std::setw(7) << value;
@@ -508,8 +513,7 @@ std::ostream& print_vdi_format(std::ostream& out, const matrix& mat) {
 }
 
 std::ostream& operator<<(std::ostream& out, const matrix& mat) {
-  constexpr bool vdi_format = true;
-  if(vdi_format)
+  if(g_vdi_format)
     return print_vdi_format(out, mat);
   else
     return print_std_format(out, mat);

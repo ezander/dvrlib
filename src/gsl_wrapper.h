@@ -17,6 +17,7 @@ struct gsl_exception {
 };
 
 void gsl_enable_exceptions();
+void set_vdi_print_format(bool enable);
 
 class vector_view;
 
@@ -139,7 +140,7 @@ matrix::matrix(int n1, int n2, const double (*x)[n]) {
 
 matrix operator*(double d, const matrix& src);
 
-std::ostream& operator<<(std::ostream& out, const matrix& vec);
+std::ostream& operator<<(std::ostream& out, const matrix& mat);
 
 class matrix_view {
   gsl_matrix_view mv;
