@@ -19,7 +19,6 @@ add_library(dvrlib STATIC
     src/gsl_wrapper.cc
     src/recon.cc
     src/recon_system.cc
-    src/vdi2048.cc
 )
 target_include_directories(dvrlib PUBLIC src)
 target_link_libraries(dvrlib PUBLIC GSL::gsl GSL::gslcblas)
@@ -40,8 +39,9 @@ include(Catch)
 catch_discover_tests(dvrlib_main)
 
 # Demo
-add_executable(dvrlib_demo demo/vdi2048_demo.cc)
+add_executable(dvrlib_demo demo/vdi2048_demo.cc demo/vdi2048.cc)
 target_link_libraries(dvrlib_demo PRIVATE dvrlib)
+target_include_directories(dvrlib_demo PRIVATE demo)
 target_compile_options(dvrlib_demo PRIVATE -Wall)
 
 # Documentation (optional — requires Doxygen)
