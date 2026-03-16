@@ -48,7 +48,8 @@ TEST_CASE("lin_recon") {
     vector x(5, mischer_teiler::x);
 
     vector r = F * x;
-    vector v(5), v_exp(5, mischer_teiler::v);
+    vector v(5);
+    vector v_exp(5, mischer_teiler::v);
 
     lin_recon(r, S_x, F, v);
     REQUIRE(vectors_almost_equal(v, v_exp));
@@ -62,7 +63,8 @@ TEST_CASE("lin_recon") {
     vector x(2, simple_system::x);
 
     vector r = F * x;
-    vector v(2), v_exp(2, simple_system::v);
+    vector v(2);
+    vector v_exp(2, simple_system::v);
 
     lin_recon(r, S_x, F, v);
     REQUIRE(vectors_almost_equal(v, v_exp));
@@ -73,7 +75,8 @@ TEST_CASE("lin_recon") {
     vector x(4, simple_system2::x);
 
     vector r = F * x;
-    vector v(4), v_exp(4, simple_system2::v);
+    vector v(4);
+    vector v_exp(4, simple_system2::v);
 
     lin_recon(r, S_x, F, v);
     REQUIRE(vectors_almost_equal(v, v_exp));
@@ -85,7 +88,9 @@ TEST_CASE("lin_recon_update") {
   matrix S_x_inv(4, 4, true, mischer_teiler::S_x_inv_diag);
   vector x(5, mischer_teiler::x);
 
-  vector v(5), dv(5), v_exp(5, mischer_teiler::v);
+  vector v(5);
+  vector v_exp(5, mischer_teiler::v);
+  vector dv(5);
   v.set(1, 3);
   v.set(2, 4);
   v.set(4, 7);
@@ -97,6 +102,7 @@ TEST_CASE("lin_recon_update") {
 
 class EnbiproDummy {
 public:
+  virtual ~EnbiproDummy() {}
   virtual vector getValues() = 0;
   virtual matrix getCovarianceMatrix() = 0;
   virtual matrix getJacobian(const vector& x) = 0;
@@ -159,7 +165,8 @@ class EnbiJacobianFunc : public func<vector, matrix> {
 
 public:
   EnbiJacobianFunc(EnbiproDummy* _enbi) : enbi(_enbi) {}
-  virtual matrix operator()(const vector& arg) const;
+  virtual ~EnbiJacobianFunc() {}
+  matrix operator()(const vector& arg) const override;
 };
 matrix EnbiJacobianFunc::operator()(const vector& arg) const {
   return enbi->getJacobian(arg);
@@ -170,7 +177,8 @@ class EnbiResidualFunc : public func<vector, vector> {
 
 public:
   EnbiResidualFunc(EnbiproDummy* _enbi) : enbi(_enbi) {}
-  virtual vector operator()(const vector& arg) const;
+  virtual ~EnbiResidualFunc() {}
+  vector operator()(const vector& arg) const override;
 };
 vector EnbiResidualFunc::operator()(const vector& arg) const {
   return enbi->getResidual(arg);
@@ -182,7 +190,8 @@ TEST_CASE("recon nonlinear") {
   matrix S_x = enbi_dummy.getCovarianceMatrix();
   EnbiResidualFunc f(&enbi_dummy);
   EnbiJacobianFunc J(&enbi_dummy);
-  vector v(x.size()), v_exp(5, mischer_teiler::v);
+  vector v(x.size());
+  vector v_exp(5, mischer_teiler::v);
   v_exp.set(4, -2.5);  // note that x(4) is different here, thus v(4) also
   matrix S_v(v.size(), v.size());
 

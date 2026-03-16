@@ -8,9 +8,9 @@
 namespace dvrlib {
 
 /**
-   Encapsulates a system to be reconciliated, including variables,
-   confidence intervals, covariance coefficient etc. Constraints still
-   need to be implemented. Also fixed variables should be treated
+   Encapsulates a system to be reconciled, including variables,
+   confidence intervals, covariance coefficient, etc. Constraints still
+   need to be implemented. Also, fixed variables should be treated
    here.
  */
 class recon_system {
@@ -30,8 +30,8 @@ class recon_system {
 
 public:
   /**
-   * Add a variable to be reconciliated to the system. If \c confint is
-   * negative it is assumed that this variable is free (i.e. no
+   * Add a variable to be reconciled to the system. If \c confint is
+   * negative, it is assumed that this variable is free (i.e., no
    * measurements). \todo If \c confint is zero it is assumed that this
    * variable is fixed.
    *

@@ -25,7 +25,7 @@ static void setup_system(recon_system& sys) {
   sys.add_covariance_coeff("m_SpI",  "m_SpII",   0.4);
 }
 
-static matrix make_F() {
+static matrix make_constraints_matrix() {
   double Fc[][15] = {
     {1, 1, 0, 0, -0.2, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0},
     {0, 0, 1, 1, -0.6, 0, 0, 0, 0, 0, 0,  0,-1, 0, 0},
@@ -35,14 +35,14 @@ static matrix make_F() {
     {0, 0, 0, 0,  0,   0, 0, 0, 0, 0, 0,  0, 1,-1, 0},
     {0, 0, 0, 0,  0,   0, 0, 0, 0,-1, 0,  0, 0, 0, 1},
   };
-  return matrix(7, 15, Fc);
+  return {7, 15, Fc};
 }
 
 TEST_CASE("VDI2048 regression") {
   recon_system sys;
   setup_system(sys);
   matrix S_x = sys.get_covariance_matrix();
-  matrix F   = make_F();
+  matrix F   = make_constraints_matrix();
   vector x   = sys.get_values();
 
   vector v(x.size());
@@ -56,7 +56,7 @@ TEST_CASE("VDI2048 regression") {
   vector confint_new(S_x.size1());
   extract_confidence(S_x_new, confint_new);
 
-  const double tol = 1e-6;
+  constexpr auto tol = 1e-6;
 
   SECTION("corrections v") {
     double expected[] = {
