@@ -1,4 +1,4 @@
-.PHONY: all demo test coverage clean
+.PHONY: all demo test coverage coverage-html clean
 
 BUILD     = build
 BUILD_COV = build-cov
@@ -11,9 +11,18 @@ demo: all
 	$(BUILD)/dvrlib_demo
 
 test: all
-	@$(BUILD)/dvrlib_main -d yes
+	@$(BUILD)/dvrlib_main
 
 coverage: $(BUILD_COV)/CMakeCache.txt
+	cmake --build $(BUILD_COV) -- -s
+	$(BUILD_COV)/dvrlib_main
+	@cd $(BUILD_COV)/CMakeFiles/dvrlib.dir/src && \
+	    gcov *.gcno 2>/dev/null \
+	        | awk '/File.*\/src\/[^/]+\.cc/{f=1; print} f && /Lines executed/{print; f=0}'; \
+	    rm -f *.gcov 2>/dev/null || true
+
+coverage-html: $(BUILD_COV)/CMakeCache.txt
+	@which lcov > /dev/null 2>&1 || { echo "lcov not found. Install with: sudo apt install lcov"; exit 1; }
 	cmake --build $(BUILD_COV) -- -s
 	$(BUILD_COV)/dvrlib_main
 	lcov --capture --directory $(BUILD_COV) --output-file $(BUILD_COV)/coverage.info

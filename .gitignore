@@ -8,3 +8,4 @@ Makefile.dep
 /src/main
 /build/
 /build-cov
+/coverage-html
