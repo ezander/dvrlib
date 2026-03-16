@@ -14,4 +14,4 @@ jobs:
         run: sudo apt-get install -y libgsl-dev
 
       - name: Build and test
-        run: make test
+        run: make run-tests
