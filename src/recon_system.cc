@@ -40,7 +40,7 @@ void recon_system::change_var(const char* name, double val, double confint) {
 
 int recon_system::get_number_measured() const {
   int count = 0;
-  for(const auto & var : vars) {
+  for(const auto& var : vars) {
     if(var.confint >= 0)
       count++;
   }
@@ -58,7 +58,7 @@ matrix recon_system::get_covariance_matrix() const {
     S_x.set(i, i, confint2var(vars[i].confint));
   }
 
-  for(const auto & extra_cov : extra_covs) {
+  for(const auto& extra_cov : extra_covs) {
     int i = find_var(extra_cov.var1);
     int j = find_var(extra_cov.var2);
     dvr_assert(i >= 0);
@@ -100,7 +100,7 @@ recon_system recon_system::updated(const vector& values,
 
 void recon_system::print_vars() const {
   printf("%-12s%10s%10s\n", "name", "value", "confint");
-  for(const auto & var : vars) {
+  for(const auto& var : vars) {
     printf("%-12s%10.3f", var.name.c_str(), var.value);
     if(var.confint < 0)
       printf("    (free)");

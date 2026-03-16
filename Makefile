@@ -42,11 +42,15 @@ $(BUILD_COV)/CMakeCache.txt:
 	    -DCMAKE_EXE_LINKER_FLAGS="--coverage"
 
 check: $(BUILD)/CMakeCache.txt
-	# Commented out, clang-tide reports too much nonsense
+	# Commented out, clang-tidy reports too much (sometimes dangerous) nonsense
 	#	@echo "--- clang-tidy ---"
 	#	@find src test demo -name '*.cc' | xargs clang-tidy -p $(BUILD)
 	@echo "--- clang-format ---"
 	@clang-format --dry-run --Werror $(SRCS) && echo "format OK"
+
+format_source:
+	@echo "--- clang-format ---"
+	@clang-format $(SRCS) -i --verbose
 
 clean:
 	rm -rf $(BUILD) $(BUILD_COV) $(COV_OUT)

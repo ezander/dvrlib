@@ -10,7 +10,7 @@ TEST_CASE("vector") {
   REQUIRE(v.get(1) == 4.0);
   REQUIRE(v.get(2) == 4.0);
 
-  for (int i = 0; i < 3; i++) {
+  for(int i = 0; i < 3; i++) {
     v.set(i, 1.23 + i);
   }
   REQUIRE(v.get(0) == 1.23);
