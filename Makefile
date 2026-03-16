@@ -11,11 +11,11 @@ demo: all
 	$(BUILD)/dvrlib_demo
 
 test: all
-	@$(BUILD)/dvrlib_main
+	@$(BUILD)/dvrlib_test
 
 coverage: $(BUILD_COV)/CMakeCache.txt
 	cmake --build $(BUILD_COV) -- -s
-	$(BUILD_COV)/dvrlib_main
+	$(BUILD_COV)/dvrlib_test
 	@cd $(BUILD_COV)/CMakeFiles/dvrlib.dir/src && \
 	    gcov *.gcno 2>/dev/null \
 	        | awk '/File.*\/src\/[^/]+\.cc/{f=1; print} f && /Lines executed/{print; f=0}'; \
@@ -24,7 +24,7 @@ coverage: $(BUILD_COV)/CMakeCache.txt
 coverage-html: $(BUILD_COV)/CMakeCache.txt
 	@which lcov > /dev/null 2>&1 || { echo "lcov not found. Install with: sudo apt install lcov"; exit 1; }
 	cmake --build $(BUILD_COV) -- -s
-	$(BUILD_COV)/dvrlib_main
+	$(BUILD_COV)/dvrlib_test
 	lcov --capture --directory $(BUILD_COV) --output-file $(BUILD_COV)/coverage.info
 	lcov --remove $(BUILD_COV)/coverage.info '*/build-cov/_deps/*' '/usr/*' --output-file $(BUILD_COV)/coverage.info
 	genhtml $(BUILD_COV)/coverage.info --output-directory $(COV_OUT)
