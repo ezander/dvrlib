@@ -13,5 +13,11 @@ jobs:
       - name: Install dependencies
         run: sudo apt-get install -y libgsl-dev
 
-      - name: Build and test
+      - name: Build
+        run: make all
+
+      - name: Run tests
         run: make run-tests
+
+      - name: Run demos
+        run: make run-demo run-demo-zalg
